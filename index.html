@@ -1,0 +1,1023 @@
+<title>Хамовники на карте</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+
+
+.leaflet-pane,
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-tile-container,
+.leaflet-pane > svg,
+.leaflet-pane > canvas,
+.leaflet-zoom-box,
+.leaflet-image-layer,
+.leaflet-layer {
+	position: absolute;
+	left: 0;
+	top: 0;
+	}
+.leaflet-container {
+	overflow: hidden;
+	}
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	        user-select: none;
+	  -webkit-user-drag: none;
+	}
+
+.leaflet-tile::selection {
+	background: transparent;
+}
+
+.leaflet-safari .leaflet-tile {
+	image-rendering: -webkit-optimize-contrast;
+	}
+
+.leaflet-safari .leaflet-tile-container {
+	width: 1600px;
+	height: 1600px;
+	-webkit-transform-origin: 0 0;
+	}
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+	display: block;
+	}
+
+
+.leaflet-container .leaflet-overlay-pane svg {
+	max-width: none !important;
+	max-height: none !important;
+	}
+.leaflet-container .leaflet-marker-pane img,
+.leaflet-container .leaflet-shadow-pane img,
+.leaflet-container .leaflet-tile-pane img,
+.leaflet-container img.leaflet-image-layer,
+.leaflet-container .leaflet-tile {
+	max-width: none !important;
+	max-height: none !important;
+	width: auto;
+	padding: 0;
+	}
+
+.leaflet-container img.leaflet-tile {
+	
+	mix-blend-mode: plus-lighter;
+}
+
+.leaflet-container.leaflet-touch-zoom {
+	-ms-touch-action: pan-x pan-y;
+	touch-action: pan-x pan-y;
+	}
+.leaflet-container.leaflet-touch-drag {
+	-ms-touch-action: pinch-zoom;
+	
+	touch-action: none;
+	touch-action: pinch-zoom;
+}
+.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom {
+	-ms-touch-action: none;
+	touch-action: none;
+}
+.leaflet-container {
+	-webkit-tap-highlight-color: transparent;
+}
+.leaflet-container a {
+	-webkit-tap-highlight-color: rgba(51, 181, 229, 0.4);
+}
+.leaflet-tile {
+	filter: inherit;
+	visibility: hidden;
+	}
+.leaflet-tile-loaded {
+	visibility: inherit;
+	}
+.leaflet-zoom-box {
+	width: 0;
+	height: 0;
+	-moz-box-sizing: border-box;
+	     box-sizing: border-box;
+	z-index: 800;
+	}
+
+.leaflet-overlay-pane svg {
+	-moz-user-select: none;
+	}
+
+.leaflet-pane         { z-index: 400; }
+
+.leaflet-tile-pane    { z-index: 200; }
+.leaflet-overlay-pane { z-index: 400; }
+.leaflet-shadow-pane  { z-index: 500; }
+.leaflet-marker-pane  { z-index: 600; }
+.leaflet-tooltip-pane   { z-index: 650; }
+.leaflet-popup-pane   { z-index: 700; }
+
+.leaflet-map-pane canvas { z-index: 100; }
+.leaflet-map-pane svg    { z-index: 200; }
+
+.leaflet-vml-shape {
+	width: 1px;
+	height: 1px;
+	}
+.lvml {
+	behavior: none;
+	display: inline-block;
+	position: absolute;
+	}
+
+
+
+
+.leaflet-control {
+	position: relative;
+	z-index: 800;
+	pointer-events: visiblePainted; 
+	pointer-events: auto;
+	}
+.leaflet-top,
+.leaflet-bottom {
+	position: absolute;
+	z-index: 1000;
+	pointer-events: none;
+	}
+.leaflet-top {
+	top: 0;
+	}
+.leaflet-right {
+	right: 0;
+	}
+.leaflet-bottom {
+	bottom: 0;
+	}
+.leaflet-left {
+	left: 0;
+	}
+.leaflet-control {
+	float: left;
+	clear: both;
+	}
+.leaflet-right .leaflet-control {
+	float: right;
+	}
+.leaflet-top .leaflet-control {
+	margin-top: 10px;
+	}
+.leaflet-bottom .leaflet-control {
+	margin-bottom: 10px;
+	}
+.leaflet-left .leaflet-control {
+	margin-left: 10px;
+	}
+.leaflet-right .leaflet-control {
+	margin-right: 10px;
+	}
+
+
+
+
+.leaflet-fade-anim .leaflet-popup {
+	opacity: 0;
+	-webkit-transition: opacity 0.2s linear;
+	   -moz-transition: opacity 0.2s linear;
+	        transition: opacity 0.2s linear;
+	}
+.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {
+	opacity: 1;
+	}
+.leaflet-zoom-animated {
+	-webkit-transform-origin: 0 0;
+	    -ms-transform-origin: 0 0;
+	        transform-origin: 0 0;
+	}
+svg.leaflet-zoom-animated {
+	will-change: transform;
+}
+
+.leaflet-zoom-anim .leaflet-zoom-animated {
+	-webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);
+	   -moz-transition:    -moz-transform 0.25s cubic-bezier(0,0,0.25,1);
+	        transition:         transform 0.25s cubic-bezier(0,0,0.25,1);
+	}
+.leaflet-zoom-anim .leaflet-tile,
+.leaflet-pan-anim .leaflet-tile {
+	-webkit-transition: none;
+	   -moz-transition: none;
+	        transition: none;
+	}
+
+.leaflet-zoom-anim .leaflet-zoom-hide {
+	visibility: hidden;
+	}
+
+
+
+
+.leaflet-interactive {
+	cursor: pointer;
+	}
+.leaflet-grab {
+	cursor: -webkit-grab;
+	cursor:    -moz-grab;
+	cursor:         grab;
+	}
+.leaflet-crosshair,
+.leaflet-crosshair .leaflet-interactive {
+	cursor: crosshair;
+	}
+.leaflet-popup-pane,
+.leaflet-control {
+	cursor: auto;
+	}
+.leaflet-dragging .leaflet-grab,
+.leaflet-dragging .leaflet-grab .leaflet-interactive,
+.leaflet-dragging .leaflet-marker-draggable {
+	cursor: move;
+	cursor: -webkit-grabbing;
+	cursor:    -moz-grabbing;
+	cursor:         grabbing;
+	}
+
+
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-image-layer,
+.leaflet-pane > svg path,
+.leaflet-tile-container {
+	pointer-events: none;
+	}
+
+.leaflet-marker-icon.leaflet-interactive,
+.leaflet-image-layer.leaflet-interactive,
+.leaflet-pane > svg path.leaflet-interactive,
+svg.leaflet-image-layer.leaflet-interactive path {
+	pointer-events: visiblePainted; 
+	pointer-events: auto;
+	}
+
+
+
+.leaflet-container {
+	background: #ddd;
+	outline-offset: 1px;
+	}
+.leaflet-container a {
+	color: #0078A8;
+	}
+.leaflet-zoom-box {
+	border: 2px dotted #38f;
+	background: rgba(255,255,255,0.5);
+	}
+
+
+
+.leaflet-container {
+	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-size: 0.75rem;
+	line-height: 1.5;
+	}
+
+
+
+
+.leaflet-bar {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+	border-radius: 4px;
+	}
+.leaflet-bar a {
+	background-color: #fff;
+	border-bottom: 1px solid #ccc;
+	width: 26px;
+	height: 26px;
+	line-height: 26px;
+	display: block;
+	text-align: center;
+	text-decoration: none;
+	color: black;
+	}
+.leaflet-bar a,
+.leaflet-control-layers-toggle {
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	display: block;
+	}
+.leaflet-bar a:hover,
+.leaflet-bar a:focus {
+	background-color: #f4f4f4;
+	}
+.leaflet-bar a:first-child {
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	}
+.leaflet-bar a:last-child {
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-bottom: none;
+	}
+.leaflet-bar a.leaflet-disabled {
+	cursor: default;
+	background-color: #f4f4f4;
+	color: #bbb;
+	}
+
+.leaflet-touch .leaflet-bar a {
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	}
+.leaflet-touch .leaflet-bar a:first-child {
+	border-top-left-radius: 2px;
+	border-top-right-radius: 2px;
+	}
+.leaflet-touch .leaflet-bar a:last-child {
+	border-bottom-left-radius: 2px;
+	border-bottom-right-radius: 2px;
+	}
+
+
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+	font: bold 18px 'Lucida Console', Monaco, monospace;
+	text-indent: 1px;
+	}
+
+.leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out  {
+	font-size: 22px;
+	}
+
+
+
+
+.leaflet-control-layers {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+	background: #fff;
+	border-radius: 5px;
+	}
+.leaflet-control-layers-toggle {
+	background-image: none;
+	width: 36px;
+	height: 36px;
+	}
+.leaflet-retina .leaflet-control-layers-toggle {
+	background-image: none;
+	background-size: 26px 26px;
+	}
+.leaflet-touch .leaflet-control-layers-toggle {
+	width: 44px;
+	height: 44px;
+	}
+.leaflet-control-layers .leaflet-control-layers-list,
+.leaflet-control-layers-expanded .leaflet-control-layers-toggle {
+	display: none;
+	}
+.leaflet-control-layers-expanded .leaflet-control-layers-list {
+	display: block;
+	position: relative;
+	}
+.leaflet-control-layers-expanded {
+	padding: 6px 10px 6px 6px;
+	color: #333;
+	background: #fff;
+	}
+.leaflet-control-layers-scrollbar {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	padding-right: 5px;
+	}
+.leaflet-control-layers-selector {
+	margin-top: 2px;
+	position: relative;
+	top: 1px;
+	}
+.leaflet-control-layers label {
+	display: block;
+	font-size: 13px;
+	font-size: 1.08333em;
+	}
+.leaflet-control-layers-separator {
+	height: 0;
+	border-top: 1px solid #ddd;
+	margin: 5px -10px 5px -6px;
+	}
+
+
+.leaflet-default-icon-path { 
+	background-image: none;
+	}
+
+
+
+
+.leaflet-container .leaflet-control-attribution {
+	background: #fff;
+	background: rgba(255, 255, 255, 0.8);
+	margin: 0;
+	}
+.leaflet-control-attribution,
+.leaflet-control-scale-line {
+	padding: 0 5px;
+	color: #333;
+	line-height: 1.4;
+	}
+.leaflet-control-attribution a {
+	text-decoration: none;
+	}
+.leaflet-control-attribution a:hover,
+.leaflet-control-attribution a:focus {
+	text-decoration: underline;
+	}
+.leaflet-attribution-flag {
+	display: inline !important;
+	vertical-align: baseline !important;
+	width: 1em;
+	height: 0.6669em;
+	}
+.leaflet-left .leaflet-control-scale {
+	margin-left: 5px;
+	}
+.leaflet-bottom .leaflet-control-scale {
+	margin-bottom: 5px;
+	}
+.leaflet-control-scale-line {
+	border: 2px solid #777;
+	border-top: none;
+	line-height: 1.1;
+	padding: 2px 5px 1px;
+	white-space: nowrap;
+	-moz-box-sizing: border-box;
+	     box-sizing: border-box;
+	background: rgba(255, 255, 255, 0.8);
+	text-shadow: 1px 1px #fff;
+	}
+.leaflet-control-scale-line:not(:first-child) {
+	border-top: 2px solid #777;
+	border-bottom: none;
+	margin-top: -2px;
+	}
+.leaflet-control-scale-line:not(:first-child):not(:last-child) {
+	border-bottom: 2px solid #777;
+	}
+
+.leaflet-touch .leaflet-control-attribution,
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+	box-shadow: none;
+	}
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+	border: 2px solid rgba(0,0,0,0.2);
+	background-clip: padding-box;
+	}
+
+
+
+
+.leaflet-popup {
+	position: absolute;
+	text-align: center;
+	margin-bottom: 20px;
+	}
+.leaflet-popup-content-wrapper {
+	padding: 1px;
+	text-align: left;
+	border-radius: 12px;
+	}
+.leaflet-popup-content {
+	margin: 13px 24px 13px 20px;
+	line-height: 1.3;
+	font-size: 13px;
+	font-size: 1.08333em;
+	min-height: 1px;
+	}
+.leaflet-popup-content p {
+	margin: 17px 0;
+	margin: 1.3em 0;
+	}
+.leaflet-popup-tip-container {
+	width: 40px;
+	height: 20px;
+	position: absolute;
+	left: 50%;
+	margin-top: -1px;
+	margin-left: -20px;
+	overflow: hidden;
+	pointer-events: none;
+	}
+.leaflet-popup-tip {
+	width: 17px;
+	height: 17px;
+	padding: 1px;
+
+	margin: -10px auto 0;
+	pointer-events: auto;
+
+	-webkit-transform: rotate(45deg);
+	   -moz-transform: rotate(45deg);
+	    -ms-transform: rotate(45deg);
+	        transform: rotate(45deg);
+	}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+	background: white;
+	color: #333;
+	box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+	}
+.leaflet-container a.leaflet-popup-close-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	border: none;
+	text-align: center;
+	width: 24px;
+	height: 24px;
+	font: 16px/24px Tahoma, Verdana, sans-serif;
+	color: #757575;
+	text-decoration: none;
+	background: transparent;
+	}
+.leaflet-container a.leaflet-popup-close-button:hover,
+.leaflet-container a.leaflet-popup-close-button:focus {
+	color: #585858;
+	}
+.leaflet-popup-scrolled {
+	overflow: auto;
+	}
+
+.leaflet-oldie .leaflet-popup-content-wrapper {
+	-ms-zoom: 1;
+	}
+.leaflet-oldie .leaflet-popup-tip {
+	width: 24px;
+	margin: 0 auto;
+
+	-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)";
+	filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678);
+	}
+
+.leaflet-oldie .leaflet-control-zoom,
+.leaflet-oldie .leaflet-control-layers,
+.leaflet-oldie .leaflet-popup-content-wrapper,
+.leaflet-oldie .leaflet-popup-tip {
+	border: 1px solid #999;
+	}
+
+
+
+
+.leaflet-div-icon {
+	background: #fff;
+	border: 1px solid #666;
+	}
+
+
+
+
+.leaflet-tooltip {
+	position: absolute;
+	padding: 6px;
+	background-color: #fff;
+	border: 1px solid #fff;
+	border-radius: 3px;
+	color: #222;
+	white-space: nowrap;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	pointer-events: none;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+	}
+.leaflet-tooltip.leaflet-interactive {
+	cursor: pointer;
+	pointer-events: auto;
+	}
+.leaflet-tooltip-top:before,
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+	position: absolute;
+	pointer-events: none;
+	border: 6px solid transparent;
+	background: transparent;
+	content: "";
+	}
+
+
+
+.leaflet-tooltip-bottom {
+	margin-top: 6px;
+}
+.leaflet-tooltip-top {
+	margin-top: -6px;
+}
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-top:before {
+	left: 50%;
+	margin-left: -6px;
+	}
+.leaflet-tooltip-top:before {
+	bottom: 0;
+	margin-bottom: -12px;
+	border-top-color: #fff;
+	}
+.leaflet-tooltip-bottom:before {
+	top: 0;
+	margin-top: -12px;
+	margin-left: -6px;
+	border-bottom-color: #fff;
+	}
+.leaflet-tooltip-left {
+	margin-left: -6px;
+}
+.leaflet-tooltip-right {
+	margin-left: 6px;
+}
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+	top: 50%;
+	margin-top: -6px;
+	}
+.leaflet-tooltip-left:before {
+	right: 0;
+	margin-right: -12px;
+	border-left-color: #fff;
+	}
+.leaflet-tooltip-right:before {
+	left: 0;
+	margin-left: -12px;
+	border-right-color: #fff;
+	}
+
+
+
+@media print {
+	
+	.leaflet-control {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+		}
+	}
+
+/* Layout: sidebar index (left) + vector map (right); on phones the map sits on top and the index follows. */
+:root{
+  --bg:#F1F1EC; --panel:#FBFBF8; --ink:#1F1D25; --muted:#6C6A73; --line:#DEDDD5; --accent:#5E2B4C; --accent-ink:#FFFFFF; --chip:#ECEBE4;
+  --land:#E8E6DE; --water:#A3B3C9; --park:#C8D2B2; --bld:#D6D1C6; --road:#FFFFFF; --road2:#F6F5F0; --rail:#A49F95; --casing:#D3D0C6;
+  --c-parks:#2F5240; --c-food:#6E2B5C; --c-beauty:#93406F; --c-leisure:#30607F; --c-edu:#1E5A62; --c-shop:#A8742A; --c-sport:#7C2532; --c-culture:#3C4991; --c-vg:#6A4430; --c-kids:#C2602A; --c-fun:#5B4290;
+  --k-bus:#7A8791; --k-prem:#2F7398; --k-dlx:#24406B; --k-elt:#A0731A; --k-lux:#1A1820;
+  --font-display:'Cormorant','Times New Roman',serif; --font-body:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --shadow:0 1px 2px rgba(30,25,40,.08),0 6px 18px rgba(30,25,40,.08);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141418; --panel:#1B1B21; --ink:#ECEAF1; --muted:#9E9BA8; --line:#2E2D36; --accent:#D1A3C4; --accent-ink:#1B1B21; --chip:#24232B;
+  --land:#1D1D23; --water:#2C384B; --park:#25311F; --bld:#2B2A31; --road:#3A3943; --road2:#2B2A32; --rail:#55515E; --casing:#16161B;
+  --c-parks:#4F8A69; --c-food:#B0559A; --c-beauty:#C8689E; --c-leisure:#4C8AB3; --c-edu:#3A929B; --c-shop:#C8913E; --c-sport:#B8434F; --c-culture:#6D7BD1; --c-vg:#A0704F; --c-kids:#DE7B44; --c-fun:#8B70C8; --k-bus:#8C99A3; --k-prem:#5AA4CC; --k-dlx:#8BA6E0; --k-elt:#D7A944; --k-lux:#EAD9A6;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.35); color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#141418; --panel:#1B1B21; --ink:#ECEAF1; --muted:#9E9BA8; --line:#2E2D36; --accent:#D1A3C4; --accent-ink:#1B1B21; --chip:#24232B;
+  --land:#1D1D23; --water:#2C384B; --park:#25311F; --bld:#2B2A31; --road:#3A3943; --road2:#2B2A32; --rail:#55515E; --casing:#16161B;
+  --c-parks:#4F8A69; --c-food:#B0559A; --c-beauty:#C8689E; --c-leisure:#4C8AB3; --c-edu:#3A929B; --c-shop:#C8913E; --c-sport:#B8434F; --c-culture:#6D7BD1; --c-vg:#A0704F; --c-kids:#DE7B44; --c-fun:#8B70C8; --k-bus:#8C99A3; --k-prem:#5AA4CC; --k-dlx:#8BA6E0; --k-elt:#D7A944; --k-lux:#EAD9A6;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 18px rgba(0,0,0,.35); color-scheme:dark }
+html,body{height:100%}
+body{overflow-x:clip}
+.side,.mapwrap{min-width:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:14px;line-height:1.45}
+.app{display:grid;grid-template-columns:minmax(320px,390px) 1fr;height:100%;min-height:0}
+.side{display:flex;flex-direction:column;min-height:0;background:var(--panel);border-right:1px solid var(--line)}
+.head{padding-block:20px 14px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:20px;display:grid;gap:12px;border-bottom:1px solid var(--line)}
+.brand{font-size:11px;letter-spacing:.32em;text-transform:uppercase;font-weight:700;color:var(--accent)}
+h1{font-family:var(--font-display);font-weight:600;font-size:34px;line-height:1.02;margin:0;text-wrap:balance}
+.sub{color:var(--muted);font-size:13px;margin:0;max-width:34ch}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--chip);border-radius:10px;padding:3px;gap:3px}
+.seg button{font:inherit;font-weight:600;font-size:13px;border:0;background:transparent;color:var(--muted);padding:8px 6px;border-radius:8px;cursor:pointer;display:flex;justify-content:center;gap:6px;align-items:baseline}
+.seg button[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+.seg small{font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
+.search{position:relative}
+.search input{width:100%;box-sizing:border-box;font:inherit;padding:9px 12px 9px 34px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;stroke:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;padding:5px 9px 5px 7px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.chip .dot{width:9px;height:9px;border-radius:50%}
+.chip .ct{color:var(--muted);font-weight:500;font-variant-numeric:tabular-nums}
+.chip[aria-pressed="false"]{opacity:.45}
+.list{overflow:auto;min-height:0;flex:1;padding-block:6px 24px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:12px}
+.grp{margin-top:14px}
+.grp h2{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin:0 8px 4px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.grp h2 .dot{width:8px;height:8px;border-radius:50%}
+.grp h3{font-size:12px;font-weight:600;margin:10px 8px 2px;color:var(--ink)}
+.row{box-sizing:border-box;display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start;padding:7px 8px;border-radius:9px;cursor:pointer;border:0;background:none;width:100%;text-align:left;font:inherit;color:inherit}
+.row:hover,.row:focus-visible{background:var(--chip);outline:none}
+.row .nm{font-weight:600;font-size:13.5px;line-height:1.3}
+.row .ad{color:var(--muted);font-size:12px}
+.badge{display:inline-grid;place-items:center;min-width:26px;height:22px;padding:0 4px;box-sizing:border-box;border-radius:11px;color:#fff;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;font-size:10.5px;font-weight:600;color:var(--muted);border:1px dashed var(--muted);border-radius:4px;padding:0 4px;margin-left:4px;vertical-align:1px}
+.rn{display:inline-grid;place-items:center;min-width:30px;height:24px;border-radius:5px;background:var(--ink);color:var(--panel);font-family:var(--font-display);font-weight:600;font-size:15px}
+.note{margin:18px 8px 0;color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:12px;display:grid;gap:6px}
+.note b{color:var(--ink);font-weight:600}
+.empty{padding:20px 8px;color:var(--muted)}
+.mapwrap{position:relative;min-height:0}
+#map{position:absolute;inset:0;background:var(--land)}
+.leaflet-container{font-family:var(--font-body);background:var(--land)}
+.mk{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;color:#fff;font-size:10px;font-weight:700;font-variant-numeric:tabular-nums;border:2px solid var(--panel);box-sizing:border-box;box-shadow:0 1px 3px rgba(0,0,0,.3);letter-spacing:-.02em}
+.mk.ap{border-style:dashed;border-color:var(--ink);opacity:.9}
+.mk.hl{transform:scale(1.35);box-shadow:0 0 0 3px var(--accent)}
+.bmk{display:grid;place-items:center;height:26px;min-width:34px;padding:0 5px;box-sizing:border-box;border-radius:6px;background:var(--ink);color:var(--panel);font-family:var(--font-display);font-weight:600;font-size:16px;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+.leaflet-popup-content{margin:12px 14px;font-size:13px;line-height:1.4;max-width:280px}
+.pp .k{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.pp .t{font-weight:700;font-size:14.5px;margin:3px 0 2px}
+.pp .a{color:var(--muted)}
+.pp .w{margin-top:6px;font-size:12px;color:var(--muted);border-left:2px dashed var(--muted);padding-left:6px}
+.pp ul{margin:6px 0 0;padding:0;list-style:none;max-height:220px;overflow:auto;display:grid;gap:3px}
+.pp li{display:grid;grid-template-columns:30px 1fr;gap:6px;font-size:12.5px}
+.leaflet-control-zoom a,.leaflet-bar a{background:var(--panel);color:var(--ink);border-color:var(--line)}
+.leaflet-control-attribution{background:color-mix(in srgb,var(--panel) 80%,transparent)!important;color:var(--muted)}
+.leaflet-control-attribution a{color:var(--muted)}
+.legend{position:absolute;z-index:500;right:max(12px,env(safe-area-inset-right,0px));top:12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:11.5px;color:var(--muted);display:grid;gap:4px;box-shadow:var(--shadow)}
+.legend span{display:flex;align-items:center;gap:7px}
+.legend i{width:16px;height:16px;border-radius:50%;display:inline-block;box-sizing:border-box}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:760px){
+  .app{display:flex;flex-direction:column;height:auto}
+  .mapwrap{height:62svh;order:-1;border-bottom:1px solid var(--line)}
+  .side{border-right:0}
+  .head{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .list{overflow:visible;padding-left:max(10px,env(safe-area-inset-left,0px));padding-right:max(10px,env(safe-area-inset-right,0px))}
+  h1{font-size:30px}
+  .legend{top:auto;bottom:24px;right:max(10px,env(safe-area-inset-right,0px))}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* --- layers, ZHK filters, collapsible groups --- */
+.layers{display:flex;gap:6px;flex-wrap:wrap}
+.layer{font:inherit;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px;padding:6px 11px 6px 8px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+.layer .sw{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--muted);display:grid;place-items:center;box-sizing:border-box}
+.layer[aria-pressed="true"] .sw{background:var(--accent);border-color:var(--accent)}
+.layer[aria-pressed="true"] .sw::after{content:"";width:8px;height:4px;border:2px solid var(--accent-ink);border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.layer .ct{color:var(--muted);font-weight:500;font-variant-numeric:tabular-nums}
+.flt{border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.flt>summary{list-style:none;cursor:pointer;padding:9px 12px;font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px}
+.flt>summary::-webkit-details-marker{display:none}
+.flt>summary .st{margin-left:auto;color:var(--muted);font-weight:500;font-size:12px}
+.flt>summary::before,.grp>summary::before{content:"";width:6px;height:6px;border-right:1.6px solid var(--muted);border-bottom:1.6px solid var(--muted);transform:rotate(-45deg);transition:transform .15s;flex:none}
+.flt[open]>summary::before,.grp[open]>summary::before{transform:rotate(45deg)}
+.fbody{padding:2px 12px 12px;display:grid;gap:12px}
+.flab{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between;gap:8px}
+.flab output{letter-spacing:0;text-transform:none;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.range{position:relative;height:26px}
+.range input{position:absolute;left:0;right:0;top:4px;width:100%;margin:0;pointer-events:none;-webkit-appearance:none;appearance:none;background:none;height:18px}
+.range input::-webkit-slider-thumb{pointer-events:auto;-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--panel);border:2px solid var(--accent);cursor:pointer}
+.range input::-moz-range-thumb{pointer-events:auto;width:14px;height:14px;border-radius:50%;background:var(--panel);border:2px solid var(--accent);cursor:pointer}
+.range .track{position:absolute;left:9px;right:9px;top:12px;height:3px;border-radius:2px;background:var(--line)}
+.range .fill{position:absolute;top:12px;height:3px;border-radius:2px;background:var(--accent)}
+.reset{font:inherit;font-size:12px;font-weight:600;color:var(--accent);background:none;border:0;padding:0;cursor:pointer;justify-self:start}
+.grp{margin-top:6px;border-bottom:1px solid var(--line)}
+.grp>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:9px;padding:11px 8px;font-weight:700;font-size:13.5px;border-radius:8px}
+.grp>summary::-webkit-details-marker{display:none}
+.grp>summary:hover{background:var(--chip)}
+.grp>summary .dot{width:10px;height:10px;border-radius:50%;flex:none}
+.grp>summary .ct{margin-left:auto;color:var(--muted);font-weight:500;font-size:12px;font-variant-numeric:tabular-nums}
+.grp .inner{padding-bottom:8px}
+.zmk{display:grid;place-items:center;width:28px;height:28px;border-radius:8px 8px 8px 2px;border:2px solid var(--panel);box-sizing:border-box;box-shadow:0 1px 4px rgba(0,0,0,.35);transform:rotate(-45deg)}
+.zmk svg{width:15px;height:15px;transform:rotate(45deg);stroke:var(--panel);fill:none;stroke-width:2.2}
+.zmk.kh{width:32px;height:32px;box-shadow:0 0 0 2px var(--accent),0 1px 4px rgba(0,0,0,.35)}
+.zbadge{display:inline-grid;place-items:center;width:26px;height:22px;border-radius:6px}
+.zbadge svg{width:13px;height:13px;stroke:var(--panel);fill:none;stroke-width:2.2}
+.pp table{border-collapse:collapse;margin-top:6px;font-size:12.5px}
+.pp td{padding:2px 0;vertical-align:top}
+.pp td:first-child{color:var(--muted);padding-right:10px;white-space:nowrap}
+.pp a{color:var(--accent);font-weight:600}
+.clsdot{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:0}
+</style>
+
+<div class="app">
+  <aside class="side">
+    <div class="head">
+      <div class="brand">Миррион</div>
+      <h1 id="title">Хамовники</h1>
+      <p class="sub" id="subtitle"></p>
+      <div class="seg" role="group" aria-label="Карта">
+        <button id="tab-kh" aria-pressed="true">Район <small id="cnt-kh"></small></button>
+        <button id="tab-lu" aria-pressed="false">ОК «Лужники» <small id="cnt-lu"></small></button>
+      </div>
+      <div class="layers" role="group" aria-label="Слои">
+        <button class="layer" id="ly-z" aria-pressed="true"><span class="sw"></span>Жилые комплексы <span class="ct" id="cnt-z"></span></button>
+        <button class="layer" id="ly-i" aria-pressed="true"><span class="sw"></span>Инфраструктура</button>
+      </div>
+      <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="ЖК, заведение, улица или номер" autocomplete="off"></label>
+      <details class="flt" id="zf">
+        <summary>Фильтр ЖК <span class="st" id="zf-st"></span></summary>
+        <div class="fbody">
+          <div><div class="flab">Класс</div><div class="chips" id="zf-cls"></div></div>
+          <div><div class="flab">Цена за м² <output id="zf-pv"></output></div>
+            <div class="range"><div class="track"></div><div class="fill" id="zf-fill"></div>
+              <input type="range" id="zf-lo" min="0" max="1000" value="0" aria-label="Цена от">
+              <input type="range" id="zf-hi" min="0" max="1000" value="1000" aria-label="Цена до"></div></div>
+          <div><div class="flab">Срок сдачи</div><div class="chips" id="zf-due"></div></div>
+          <button class="reset" id="zf-reset">Сбросить фильтр</button>
+        </div>
+      </details>
+      <div class="chips" id="chips"></div>
+    </div>
+    <div class="list" id="list"></div>
+  </aside>
+  <div class="mapwrap"><div id="map" role="region" aria-label="Карта"></div>
+    <div class="legend" id="legend"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+const DATA={"cats":{"parks":"Парки и скверы","food":"Рестораны и клубы","beauty":"Красота и SPA","leisure":"Речные прогулки","edu":"Образование для детей","shop":"Шопинг","sport":"Спорт и здоровье","culture":"Культура","vg":"Воробьёвы горы"},"kh":[{"n":245,"name":"Парк «Музеон»","cat":"parks","sub":"Парки","map":"kh","lat":55.73539,"lon":37.60734,"addr":"ул. Крымский Вал, 2","approx":0},{"n":246,"name":"Парк Горького","cat":"parks","sub":"Парки","map":"kh","lat":55.72709,"lon":37.60024,"addr":"ул. Крымский Вал, 9","approx":0},{"n":247,"name":"Нескучный сад","cat":"parks","sub":"Парки","map":"kh","lat":55.7176,"lon":37.58799,"addr":"Ленинский пр-т","approx":0},{"n":248,"name":"Природный заказник «Воробьёвы горы»","cat":"parks","sub":"Парки","map":"kh","lat":55.7105,"lon":37.544,"addr":"Воробьёвы горы","approx":0},{"n":249,"name":"Ботанический сад МГУ","cat":"parks","sub":"Парки","map":"kh","lat":55.70542,"lon":37.52387,"addr":"ул. Академика Хохлова","approx":0},{"n":250,"name":"Природный заказник «Долина реки Сетунь»","cat":"parks","sub":"Парки","map":"kh","lat":55.7286,"lon":37.54279,"addr":"квадрат B4 на бумажной карте","approx":1},{"n":251,"name":"Усадьба Трубецких","cat":"parks","sub":"Скверы и усадьбы","map":"kh","lat":55.72874,"lon":37.57695,"addr":"ул. Усачёва","approx":0},{"n":252,"name":"Музей-усадьба Л. Н. Толстого","cat":"parks","sub":"Скверы и усадьбы","map":"kh","lat":55.73417,"lon":37.58593,"addr":"ул. Льва Толстого, 21","approx":0},{"n":253,"name":"Новодевичьи пруды","cat":"parks","sub":"Скверы и усадьбы","map":"kh","lat":55.72735,"lon":37.55522,"addr":"Новодевичий пр-д","approx":0},{"n":254,"name":"Сквер Девичьего поля","cat":"parks","sub":"Скверы и усадьбы","map":"kh","lat":55.73583,"lon":37.57771,"addr":"Б. Пироговская ул.","approx":0},{"n":255,"name":"Cihan Steak & Kebab","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.72811,"lon":37.58435,"addr":"Комсомольский пр-т, 21/10","approx":0},{"n":256,"name":"Due Forni","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73481,"lon":37.56831,"addr":"Б. Саввинский пер., 11с1","approx":0},{"n":257,"name":"Воронеж","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.74458,"lon":37.6011,"addr":"ул. Пречистенка","approx":0},{"n":258,"name":"Accenti","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73764,"lon":37.59312,"addr":"Кропоткинский пер.","approx":0},{"n":259,"name":"SEMIFREDDO","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73515,"lon":37.58665,"addr":"ул. Тимура Фрунзе, 11с55","approx":0},{"n":260,"name":"Seiji","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73274,"lon":37.58983,"addr":"квадрат F4 на бумажной карте","approx":1},{"n":261,"name":"Bagebi","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.74117,"lon":37.59311,"addr":"ул. Пречистенка","approx":0},{"n":262,"name":"Сыроварня","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.74499,"lon":37.61292,"addr":"квадрат H2 на бумажной карте","approx":1},{"n":263,"name":"Луч","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73014,"lon":37.56778,"addr":"Б. Пироговская ул.","approx":0},{"n":264,"name":"Kefi","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.74048,"lon":37.59324,"addr":"Мансуровский пер.","approx":0},{"n":265,"name":"Жеральдин","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73902,"lon":37.59742,"addr":"Коробейников пер.","approx":0},{"n":266,"name":"Кофемания","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73088,"lon":37.57849,"addr":"квадрат E4 на бумажной карте","approx":1},{"n":267,"name":"Hibiki","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.72734,"lon":37.57591,"addr":"Трубецкая ул.","approx":0},{"n":268,"name":"Айна","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.74178,"lon":37.59915,"addr":"Лопухинский пер.","approx":0},{"n":269,"name":"Вадваре","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.72599,"lon":37.57334,"addr":"ул. Ефремова","approx":0},{"n":270,"name":"Eva","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73934,"lon":37.57547,"addr":"1-й Вражский пер.","approx":0},{"n":271,"name":"#СибирьСибирь","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.74614,"lon":37.58012,"addr":"Смоленская ул.","approx":0},{"n":272,"name":"Сахалин","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.7462,"lon":37.58038,"addr":"Смоленская ул.","approx":0},{"n":273,"name":"Oltremare","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73622,"lon":37.56812,"addr":"Саввинская наб.","approx":0},{"n":274,"name":"Rebecca","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.72626,"lon":37.57394,"addr":"ул. Ефремова","approx":0},{"n":275,"name":"Pasta Casa 39","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.72638,"lon":37.57969,"addr":"Комсомольский пр-т","approx":0},{"n":276,"name":"Peach","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73207,"lon":37.56116,"addr":"Саввинская наб.","approx":0},{"n":277,"name":"Hands Asian bistro","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73532,"lon":37.57294,"addr":"Погодинская ул.","approx":0},{"n":278,"name":"Hands","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73545,"lon":37.5732,"addr":"Погодинская ул.","approx":0},{"n":279,"name":"Biwon","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73568,"lon":37.57263,"addr":"2-й пер. Тружеников","approx":0},{"n":280,"name":"Sapiens","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.7343,"lon":37.5891,"addr":"ул. Тимура Фрунзе","approx":0},{"n":281,"name":"Клёво","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.72403,"lon":37.5642,"addr":"квадрат D5 на бумажной карте","approx":1},{"n":282,"name":"M2 Органик клуб","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.72592,"lon":37.56384,"addr":"квадрат D5 на бумажной карте","approx":1},{"n":283,"name":"Андерсон","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73607,"lon":37.58333,"addr":"ул. Россолимо","approx":0},{"n":284,"name":"Ribambelle Cafe & Shop","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73047,"lon":37.57917,"addr":"Оболенский пер., 9к1","approx":0},{"n":285,"name":"Брусника","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73877,"lon":37.57639,"addr":"ул. Плющиха","approx":0},{"n":285,"name":"Брусника","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73089,"lon":37.5789,"addr":"Оболенский пер., 9к1","approx":0},{"n":286,"name":"Burlesque","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.72694,"lon":37.58053,"addr":"Комсомольский пр-т, 28","approx":0},{"n":287,"name":"Hot Collection","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73236,"lon":37.56061,"addr":"Саввинская наб.","approx":0},{"n":288,"name":"Soho Rooms","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73299,"lon":37.56208,"addr":"Саввинская наб.","approx":0},{"n":289,"name":"Танцы food&people","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73885,"lon":37.60544,"addr":"Пречистенская наб.","approx":0},{"n":290,"name":"Cevicheria","cat":"food","sub":"Рестораны и клубы","map":"kh","lat":55.73859,"lon":37.60519,"addr":"Пречистенская наб.","approx":0},{"n":291,"name":"Центр здоровья и красоты «Белый сад»","cat":"beauty","sub":"Салоны красоты","map":"kh","lat":55.73626,"lon":37.58836,"addr":"Зубовский пр-д","approx":0},{"n":292,"name":"Мильфей","cat":"beauty","sub":"Салоны красоты","map":"kh","lat":55.72312,"lon":37.57127,"addr":"ул. Ефремова","approx":0},{"n":293,"name":"Dessange","cat":"beauty","sub":"Салоны красоты","map":"kh","lat":55.7375,"lon":37.58767,"addr":"Зубовский б-р","approx":0},{"n":293,"name":"Dessange","cat":"beauty","sub":"Салоны красоты","map":"kh","lat":55.73723,"lon":37.60132,"addr":"Коробейников пер.","approx":0},{"n":294,"name":"Москвичка brow & beauty bar","cat":"beauty","sub":"Салоны красоты","map":"kh","lat":55.73484,"lon":37.5887,"addr":"ул. Тимура Фрунзе","approx":0},{"n":295,"name":"Fonte Beauty","cat":"beauty","sub":"Салоны красоты","map":"kh","lat":55.74498,"lon":37.60378,"addr":"квадрат G2 на бумажной карте","approx":1},{"n":296,"name":"Гардения","cat":"beauty","sub":"Салоны красоты","map":"kh","lat":55.73504,"lon":37.57241,"addr":"Погодинская ул.","approx":0},{"n":297,"name":"Mone","cat":"beauty","sub":"Салоны красоты","map":"kh","lat":55.72871,"lon":37.58502,"addr":"Комсомольский пр-т","approx":0},{"n":298,"name":"Prive7","cat":"beauty","sub":"Салоны красоты","map":"kh","lat":55.72676,"lon":37.58535,"addr":"квадрат F5 на бумажной карте","approx":1},{"n":299,"name":"Krygina studio","cat":"beauty","sub":"Салоны красоты","map":"kh","lat":55.74604,"lon":37.5985,"addr":"Нащокинский пер.","approx":0},{"n":300,"name":"THE-FACE-ONLY","cat":"beauty","sub":"Салоны красоты","map":"kh","lat":55.72716,"lon":37.57248,"addr":"ул. Усачёва, 11Г","approx":0},{"n":301,"name":"Agate Beauty","cat":"beauty","sub":"Салоны красоты","map":"kh","lat":55.72701,"lon":37.57215,"addr":"ул. Усачёва, 11Д","approx":0},{"n":302,"name":"iO Beauty gallery","cat":"beauty","sub":"Салоны красоты","map":"kh","lat":55.72442,"lon":37.56333,"addr":"квадрат D5 на бумажной карте","approx":1},{"n":303,"name":"Faceology","cat":"beauty","sub":"Салоны красоты","map":"kh","lat":55.72518,"lon":37.57748,"addr":"квадрат E5 на бумажной карте","approx":1},{"n":304,"name":"Ma & mi","cat":"beauty","sub":"Салоны красоты","map":"kh","lat":55.72376,"lon":37.56695,"addr":"квадрат D5 на бумажной карте","approx":1},{"n":305,"name":"Slowmo","cat":"beauty","sub":"Салоны красоты","map":"kh","lat":55.72664,"lon":37.57065,"addr":"ул. Усачёва, 15","approx":0},{"n":306,"name":"Плющ","cat":"beauty","sub":"Салоны красоты","map":"kh","lat":55.74101,"lon":37.5773,"addr":"ул. Плющиха","approx":0},{"n":307,"name":"Британа","cat":"beauty","sub":"Салоны красоты","map":"kh","lat":55.73882,"lon":37.58191,"addr":"ул. Бурденко","approx":0},{"n":308,"name":"Quantum clinic","cat":"beauty","sub":"Косметология","map":"kh","lat":55.7257,"lon":37.57457,"addr":"ул. Ефремова","approx":0},{"n":309,"name":"Сенсави","cat":"beauty","sub":"Косметология","map":"kh","lat":55.72586,"lon":37.57849,"addr":"Трубецкая ул.","approx":0},{"n":310,"name":"Real Clinic","cat":"beauty","sub":"Косметология","map":"kh","lat":55.71912,"lon":37.57467,"addr":"квадрат E6 на бумажной карте","approx":1},{"n":311,"name":"Lazer Jazz","cat":"beauty","sub":"Косметология","map":"kh","lat":55.72244,"lon":37.55871,"addr":"ул. Хамовнический Вал","approx":0},{"n":312,"name":"Beauty Class Clinic","cat":"beauty","sub":"Косметология","map":"kh","lat":55.72642,"lon":37.57429,"addr":"Трубецкая ул., 12","approx":0},{"n":313,"name":"SVSClinic","cat":"beauty","sub":"Косметология","map":"kh","lat":55.73138,"lon":37.58697,"addr":"квадрат F4 на бумажной карте","approx":1},{"n":315,"name":"Save my look","cat":"beauty","sub":"Косметология","map":"kh","lat":55.7261,"lon":37.57359,"addr":"ул. Ефремова","approx":0},{"n":316,"name":"OldBoy","cat":"beauty","sub":"Барбершопы","map":"kh","lat":55.72263,"lon":37.57379,"addr":"3-я Фрунзенская ул.","approx":0},{"n":317,"name":"OldBoy Культурный","cat":"beauty","sub":"Барбершопы","map":"kh","lat":55.73155,"lon":37.5879,"addr":"квадрат F4 на бумажной карте","approx":1},{"n":320,"name":"Аляска","cat":"beauty","sub":"Барбершопы","map":"kh","lat":55.729,"lon":37.57017,"addr":"М. Пироговская ул., 13","approx":0},{"n":322,"name":"Усачёвские бани","cat":"beauty","sub":"SPA","map":"kh","lat":55.72879,"lon":37.57133,"addr":"ул. Усачёва, 10с1","approx":0},{"n":323,"name":"QuintesSense","cat":"beauty","sub":"SPA","map":"kh","lat":55.71796,"lon":37.57518,"addr":"квадрат E6 на бумажной карте","approx":1},{"n":324,"name":"World Class Spa","cat":"beauty","sub":"SPA","map":"kh","lat":55.72631,"lon":37.57213,"addr":"ул. Доватора","approx":0},{"n":325,"name":"City Resort","cat":"beauty","sub":"SPA","map":"kh","lat":55.72278,"lon":37.5519,"addr":"квадрат C5 на бумажной карте","approx":1},{"n":328,"name":"Причал Фрунзенский","cat":"leisure","sub":"Речные прогулки","map":"kh","lat":55.71911,"lon":37.57299,"addr":"квадрат E6 на бумажной карте","approx":1},{"n":329,"name":"ГБОУ Школа № 1535","cat":"edu","sub":"Школы и лицеи","map":"kh","lat":55.72999,"lon":37.56555,"addr":"квадрат D4 на бумажной карте","approx":1},{"n":329,"name":"ГБОУ Школа № 1535","cat":"edu","sub":"Школы и лицеи","map":"kh","lat":55.72472,"lon":37.56467,"addr":"квадрат D5 на бумажной карте","approx":1},{"n":330,"name":"ГБОУ «Пятьдесят седьмая школа»","cat":"edu","sub":"Школы и лицеи","map":"kh","lat":55.73009,"lon":37.58081,"addr":"Несвижский пер.","approx":0},{"n":331,"name":"Школа № 171","cat":"edu","sub":"Школы и лицеи","map":"kh","lat":55.71928,"lon":37.57489,"addr":"Комсомольский пр-т","approx":0},{"n":332,"name":"ГБОУ Школа № 1253","cat":"edu","sub":"Школы и лицеи","map":"kh","lat":55.73654,"lon":37.5906,"addr":"квадрат F3 на бумажной карте","approx":1},{"n":332,"name":"ГБОУ Школа № 1253","cat":"edu","sub":"Школы и лицеи","map":"kh","lat":55.73103,"lon":37.5899,"addr":"квадрат F4 на бумажной карте","approx":1},{"n":333,"name":"ГБОУ Школа № 1259","cat":"edu","sub":"Школы и лицеи","map":"kh","lat":55.71537,"lon":37.60648,"addr":"квадрат H7 на бумажной карте","approx":1},{"n":333,"name":"ГБОУ Школа № 1259","cat":"edu","sub":"Школы и лицеи","map":"kh","lat":55.70808,"lon":37.60711,"addr":"квадрат H8 на бумажной карте","approx":1},{"n":334,"name":"Предуниверсарий Лингвистический лицей № 1555","cat":"edu","sub":"Школы и лицеи","map":"kh","lat":55.73659,"lon":37.5918,"addr":"квадрат F3 на бумажной карте","approx":1},{"n":335,"name":"ГБОУ Школа № 1529 им. А. С. Грибоедова","cat":"edu","sub":"Школы и лицеи","map":"kh","lat":55.74699,"lon":37.5958,"addr":"Староконюшенный пер.","approx":0},{"n":336,"name":"Школа «Виктория-2000»","cat":"edu","sub":"Школы и лицеи","map":"kh","lat":55.71694,"lon":37.57701,"addr":"ул. Хамовнический Вал","approx":0},{"n":337,"name":"Филипповская школа","cat":"edu","sub":"Школы и лицеи","map":"kh","lat":55.72558,"lon":37.5642,"addr":"ул. Усачёва","approx":0},{"n":337,"name":"Филипповская школа","cat":"edu","sub":"Школы и лицеи","map":"kh","lat":55.72938,"lon":37.57085,"addr":"М. Пироговская ул., 13с1","approx":0},{"n":338,"name":"Частная школа «Золотое сечение»","cat":"edu","sub":"Школы и лицеи","map":"kh","lat":55.71808,"lon":37.57433,"addr":"квадрат E6 на бумажной карте","approx":1},{"n":339,"name":"Начальная школа Soft","cat":"edu","sub":"Школы и лицеи","map":"kh","lat":55.73008,"lon":37.56565,"addr":"квадрат D4 на бумажной карте","approx":1},{"n":340,"name":"Школа «Новый взгляд»","cat":"edu","sub":"Школы и лицеи","map":"kh","lat":55.7275,"lon":37.5737,"addr":"1-й Шибаевский пер.","approx":0},{"n":341,"name":"Школа Brosko school","cat":"edu","sub":"Школы и лицеи","map":"kh","lat":55.73833,"lon":37.57843,"addr":"квадрат E3 на бумажной карте","approx":1},{"n":344,"name":"Детский сад № 676","cat":"edu","sub":"Детские сады","map":"kh","lat":55.7233,"lon":37.56293,"addr":"квадрат D5 на бумажной карте","approx":1},{"n":344,"name":"Детский сад № 676","cat":"edu","sub":"Детские сады","map":"kh","lat":55.7173,"lon":37.56295,"addr":"квадрат D6 на бумажной карте","approx":1},{"n":345,"name":"Детский сад № 1093","cat":"edu","sub":"Детские сады","map":"kh","lat":55.72032,"lon":37.57622,"addr":"квадрат E6 на бумажной карте","approx":1},{"n":346,"name":"Детский сад № 1155","cat":"edu","sub":"Детские сады","map":"kh","lat":55.71961,"lon":37.57779,"addr":"квадрат E6 на бумажной карте","approx":1},{"n":347,"name":"Детский сад № 1359","cat":"edu","sub":"Детские сады","map":"kh","lat":55.72516,"lon":37.57674,"addr":"квадрат E5 на бумажной карте","approx":1},{"n":347,"name":"Детский сад № 1359","cat":"edu","sub":"Детские сады","map":"kh","lat":55.71808,"lon":37.57702,"addr":"квадрат E6 на бумажной карте","approx":1},{"n":348,"name":"Детский сад № 1476","cat":"edu","sub":"Детские сады","map":"kh","lat":55.72369,"lon":37.57814,"addr":"квадрат E5 на бумажной карте","approx":1},{"n":349,"name":"Детский сад № 2107","cat":"edu","sub":"Детские сады","map":"kh","lat":55.72361,"lon":37.57653,"addr":"квадрат E5 на бумажной карте","approx":1},{"n":349,"name":"Детский сад № 2107","cat":"edu","sub":"Детские сады","map":"kh","lat":55.72002,"lon":37.57324,"addr":"квадрат E6 на бумажной карте","approx":1},{"n":350,"name":"Детский сад № 2661","cat":"edu","sub":"Детские сады","map":"kh","lat":55.72436,"lon":37.55287,"addr":"квадрат C5 на бумажной карте","approx":1},{"n":351,"name":"Детский сад № 1253","cat":"edu","sub":"Детские сады","map":"kh","lat":55.73302,"lon":37.5895,"addr":"квадрат F4 на бумажной карте","approx":1},{"n":352,"name":"Детский сад № 1259","cat":"edu","sub":"Детские сады","map":"kh","lat":55.70693,"lon":37.59363,"addr":"квадрат G8 на бумажной карте","approx":1},{"n":352,"name":"Детский сад № 1259","cat":"edu","sub":"Детские сады","map":"kh","lat":55.7092,"lon":37.60463,"addr":"квадрат H8 на бумажной карте","approx":1},{"n":353,"name":"Детский сад «Лучик»","cat":"edu","sub":"Детские сады","map":"kh","lat":55.74275,"lon":37.60098,"addr":"2-й Обыденский пер.","approx":0},{"n":354,"name":"Детский сад Park Kultury Nursery","cat":"edu","sub":"Детские сады","map":"kh","lat":55.73749,"lon":37.58108,"addr":"квадрат E3 на бумажной карте","approx":1},{"n":355,"name":"Детский сад My Sadik Garden Square","cat":"edu","sub":"Детские сады","map":"kh","lat":55.72416,"lon":37.57653,"addr":"квадрат E5 на бумажной карте","approx":1},{"n":356,"name":"Детский сад Smile Fish","cat":"edu","sub":"Детские сады","map":"kh","lat":55.72007,"lon":37.57395,"addr":"квадрат E6 на бумажной карте","approx":1},{"n":357,"name":"Детский сад RIS Nursery","cat":"edu","sub":"Детские сады","map":"kh","lat":55.72497,"lon":37.56587,"addr":"квадрат D5 на бумажной карте","approx":1},{"n":358,"name":"Детский сад Sun School","cat":"edu","sub":"Детские сады","map":"kh","lat":55.72565,"lon":37.57319,"addr":"ул. Ефремова","approx":0},{"n":359,"name":"Детский сад «Радуга»","cat":"edu","sub":"Детские сады","map":"kh","lat":55.72011,"lon":37.57452,"addr":"Комсомольский пр-т, 45","approx":0},{"n":360,"name":"Детский сад Infant school","cat":"edu","sub":"Детские сады","map":"kh","lat":55.72438,"lon":37.57833,"addr":"квадрат E5 на бумажной карте","approx":1},{"n":361,"name":"Детский сад Discovery English Preschool","cat":"edu","sub":"Детские сады","map":"kh","lat":55.73688,"lon":37.57932,"addr":"квадрат E3 на бумажной карте","approx":1},{"n":227,"name":"Академия PARIS SAINT-GERMAIN","cat":"edu","sub":"Развивающие учреждения","map":"kh","lat":55.72244,"lon":37.54549,"addr":"ул. Лужники, 24с46","approx":0},{"n":228,"name":"Школа ФК «Лужники»","cat":"edu","sub":"Развивающие учреждения","map":"kh","lat":55.71513,"lon":37.54853,"addr":"ул. Лужники, 24","approx":0},{"n":363,"name":"Московский дворец пионеров","cat":"edu","sub":"Развивающие учреждения","map":"kh","lat":55.70386,"lon":37.55259,"addr":"пр-т Вернадского / ул. Косыгина","approx":0},{"n":364,"name":"Детская музыкальная школа им. В. И. Мурадели","cat":"edu","sub":"Развивающие учреждения","map":"kh","lat":55.74054,"lon":37.59051,"addr":"ул. Пречистенка, 32/1с1","approx":0},{"n":365,"name":"Детская музыкальная школа им. Людвига ван Бетховена","cat":"edu","sub":"Развивающие учреждения","map":"kh","lat":55.74385,"lon":37.58991,"addr":"Б. Могильцевский пер.","approx":0},{"n":366,"name":"Детская музыкальная школа им. С. И. Танеева","cat":"edu","sub":"Развивающие учреждения","map":"kh","lat":55.74506,"lon":37.58995,"addr":"квадрат F2 на бумажной карте","approx":1},{"n":367,"name":"Центр оперного пения им. Г. Вишневской","cat":"edu","sub":"Развивающие учреждения","map":"kh","lat":55.74027,"lon":37.59758,"addr":"ул. Остоженка","approx":0},{"n":368,"name":"Детская художественная школа им. В. А. Серова","cat":"edu","sub":"Развивающие учреждения","map":"kh","lat":55.74064,"lon":37.59085,"addr":"ул. Пречистенка","approx":0},{"n":369,"name":"Уроки верховой езды «Точка варения»","cat":"edu","sub":"Развивающие учреждения","map":"kh","lat":55.73016,"lon":37.5798,"addr":"квадрат E4 на бумажной карте","approx":1},{"n":370,"name":"Детский центр Музея Москвы","cat":"edu","sub":"Развивающие учреждения","map":"kh","lat":55.73658,"lon":37.59341,"addr":"Зубовский б-р, 2","approx":0},{"n":372,"name":"МГУ им. М. В. Ломоносова","cat":"edu","sub":"Вузы","map":"kh","lat":55.70291,"lon":37.53076,"addr":"Ленинские горы, 1","approx":0},{"n":373,"name":"НИУ ВШЭ, факультет математики","cat":"edu","sub":"Вузы","map":"kh","lat":55.72934,"lon":37.57201,"addr":"ул. Усачёва, 6","approx":0},{"n":374,"name":"Первый МГМУ им. И. М. Сеченова","cat":"edu","sub":"Вузы","map":"kh","lat":55.72836,"lon":37.57385,"addr":"Трубецкая ул., 8","approx":0},{"n":375,"name":"РНИМУ им. Н. И. Пирогова","cat":"edu","sub":"Вузы","map":"kh","lat":55.73798,"lon":37.57872,"addr":"квадрат E3 на бумажной карте","approx":1},{"n":376,"name":"МГЛУ им. Мориса Тореза","cat":"edu","sub":"Вузы","map":"kh","lat":55.73886,"lon":37.5942,"addr":"ул. Остоженка","approx":0},{"n":377,"name":"РГУ им. А. Н. Косыгина","cat":"edu","sub":"Вузы","map":"kh","lat":55.71978,"lon":37.60059,"addr":"М. Калужская ул., 1","approx":0},{"n":378,"name":"МПГУ","cat":"edu","sub":"Вузы","map":"kh","lat":55.73211,"lon":37.57639,"addr":"М. Пироговская ул., 1с1","approx":0},{"n":379,"name":"МИРЭА — Российский технологический университет","cat":"edu","sub":"Вузы","map":"kh","lat":55.7319,"lon":37.5772,"addr":"М. Пироговская ул., 1","approx":0},{"n":380,"name":"Общевойсковая академия ВС РФ","cat":"edu","sub":"Вузы","map":"kh","lat":55.7382,"lon":37.57843,"addr":"3-й пер. Тружеников","approx":0},{"n":381,"name":"Дипломатическая академия МИД","cat":"edu","sub":"Вузы","map":"kh","lat":55.73568,"lon":37.5955,"addr":"Зубовский б-р","approx":0},{"n":382,"name":"Всероссийская академия внешней торговли","cat":"edu","sub":"Вузы","map":"kh","lat":55.72691,"lon":37.53672,"addr":"Воробьёвское ш.","approx":0},{"n":383,"name":"Московская государственная академия хореографии","cat":"edu","sub":"Вузы","map":"kh","lat":55.72167,"lon":37.58096,"addr":"3-я Фрунзенская ул.","approx":0},{"n":384,"name":"AB Энотека","cat":"shop","sub":"Гастрономы и винотеки","map":"kh","lat":55.72405,"lon":37.57703,"addr":"Комсомольский пр-т","approx":0},{"n":385,"name":"Винотека SimpleWine","cat":"shop","sub":"Гастрономы и винотеки","map":"kh","lat":55.72751,"lon":37.56754,"addr":"ул. Усачёва, 26","approx":0},{"n":385,"name":"Винотека SimpleWine","cat":"shop","sub":"Гастрономы и винотеки","map":"kh","lat":55.72499,"lon":37.57825,"addr":"Комсомольский пр-т","approx":0},{"n":386,"name":"Винная грамота","cat":"shop","sub":"Гастрономы и винотеки","map":"kh","lat":55.73538,"lon":37.58442,"addr":"ул. Льва Толстого","approx":0},{"n":387,"name":"Абрау-Дюрсо","cat":"shop","sub":"Гастрономы и винотеки","map":"kh","lat":55.74183,"lon":37.58394,"addr":"Смоленский б-р, 15","approx":0},{"n":388,"name":"Азбука daily","cat":"shop","sub":"Гастрономы и винотеки","map":"kh","lat":55.7333,"lon":37.59244,"addr":"Комсомольский пр-т","approx":0},{"n":389,"name":"Азбука вкуса","cat":"shop","sub":"Гастрономы и винотеки","map":"kh","lat":55.7334,"lon":37.59262,"addr":"Комсомольский пр-т","approx":0},{"n":390,"name":"Усачёвский рынок","cat":"shop","sub":"Гастрономы и винотеки","map":"kh","lat":55.72752,"lon":37.56776,"addr":"ул. Усачёва, 26","approx":0},{"n":391,"name":"Мясной бутик «Праймбиф»","cat":"shop","sub":"Гастрономы и винотеки","map":"kh","lat":55.74236,"lon":37.58377,"addr":"Смоленский б-р","approx":0},{"n":392,"name":"Мираторг","cat":"shop","sub":"Гастрономы и винотеки","map":"kh","lat":55.74115,"lon":37.57643,"addr":"1-й пер. Тружеников","approx":0},{"n":393,"name":"Рыбная мануфактура № 1","cat":"shop","sub":"Гастрономы и винотеки","map":"kh","lat":55.72533,"lon":37.57506,"addr":"ул. Ефремова, 10к1","approx":0},{"n":394,"name":"Ферма дома","cat":"shop","sub":"Гастрономы и винотеки","map":"kh","lat":55.71945,"lon":37.57438,"addr":"квадрат E6 на бумажной карте","approx":1},{"n":396,"name":"Cosmomedica by Doctor Kondrasheva","cat":"shop","sub":"Парфюмерия и косметика","map":"kh","lat":55.73923,"lon":37.60443,"addr":"квадрат G3 на бумажной карте","approx":1},{"n":397,"name":"Ароматека","cat":"shop","sub":"Парфюмерия и косметика","map":"kh","lat":55.74328,"lon":37.60263,"addr":"квадрат G2 на бумажной карте","approx":1},{"n":399,"name":"Ouvet Home","cat":"shop","sub":"Товары для дома и интерьера","map":"kh","lat":55.72667,"lon":37.58693,"addr":"квадрат F5 на бумажной карте","approx":1},{"n":400,"name":"Togas","cat":"shop","sub":"Товары для дома и интерьера","map":"kh","lat":55.73011,"lon":37.58698,"addr":"квадрат F4 на бумажной карте","approx":1},{"n":401,"name":"ATTRIBUT","cat":"shop","sub":"Товары для дома и интерьера","map":"kh","lat":55.71681,"lon":37.57489,"addr":"ул. Хамовнический Вал","approx":0},{"n":405,"name":"Бассейн «Чайка»","cat":"sport","sub":"Спорт и здоровье","map":"kh","lat":55.7363,"lon":37.59682,"addr":"Турчанинов пер.","approx":0},{"n":406,"name":"Бассейн «Буревестник»","cat":"sport","sub":"Спорт и здоровье","map":"kh","lat":55.73566,"lon":37.57572,"addr":"ул. Плющиха","approx":0},{"n":407,"name":"Fitness Eywa Health & SPA","cat":"sport","sub":"Спорт и здоровье","map":"kh","lat":55.73676,"lon":37.56856,"addr":"квадрат D3 на бумажной карте","approx":1},{"n":408,"name":"XFit «Фьюжн Премиум»","cat":"sport","sub":"Спорт и здоровье","map":"kh","lat":55.73074,"lon":37.57753,"addr":"квадрат E4 на бумажной карте","approx":1},{"n":409,"name":"Golden Mile Fitness & SPA","cat":"sport","sub":"Спорт и здоровье","map":"kh","lat":55.73692,"lon":37.60038,"addr":"Хилков пер.","approx":0},{"n":410,"name":"Донспорт","cat":"sport","sub":"Спорт и здоровье","map":"kh","lat":55.7297,"lon":37.56543,"addr":"квадрат D4 на бумажной карте","approx":1},{"n":411,"name":"World Class Хамовники","cat":"sport","sub":"Спорт и здоровье","map":"kh","lat":55.72631,"lon":37.57213,"addr":"ул. Доватора","approx":0},{"n":412,"name":"Федерация велосипедного спорта России","cat":"sport","sub":"Спорт и здоровье","map":"kh","lat":55.71439,"lon":37.56768,"addr":"Лужнецкая наб., 8с1","approx":0},{"n":413,"name":"Федерация хоккея на траве России","cat":"sport","sub":"Спорт и здоровье","map":"kh","lat":55.71386,"lon":37.56847,"addr":"Лужнецкая наб., 8с2","approx":0},{"n":417,"name":"ГМИИ им. А. С. Пушкина","cat":"culture","sub":"Культура","map":"kh","lat":55.74728,"lon":37.60542,"addr":"ул. Волхонка, 12","approx":0},{"n":418,"name":"ГМИИ им. Пушкина. Галерея искусства стран Европы и Америки","cat":"culture","sub":"Культура","map":"kh","lat":55.74649,"lon":37.60531,"addr":"ул. Волхонка, 14с6","approx":0},{"n":419,"name":"Музей Москвы","cat":"culture","sub":"Культура","map":"kh","lat":55.73658,"lon":37.59341,"addr":"Зубовский б-р, 2","approx":0},{"n":420,"name":"Гараж","cat":"culture","sub":"Культура","map":"kh","lat":55.72792,"lon":37.60177,"addr":"ул. Крымский Вал, 9с32","approx":0},{"n":421,"name":"Мультимедиа Арт Музей","cat":"culture","sub":"Культура","map":"kh","lat":55.74166,"lon":37.59854,"addr":"ул. Остоженка, 16","approx":0},{"n":422,"name":"Дом-музей Льва Толстого","cat":"culture","sub":"Культура","map":"kh","lat":55.73417,"lon":37.58593,"addr":"ул. Льва Толстого, 21","approx":0},{"n":423,"name":"Музей им. И. С. Тургенева","cat":"culture","sub":"Культура","map":"kh","lat":55.73872,"lon":37.5961,"addr":"ул. Остоженка, 37","approx":0},{"n":424,"name":"Музей истории медицины ПМГМУ им. И. М. Сеченова","cat":"culture","sub":"Культура","map":"kh","lat":55.73203,"lon":37.56963,"addr":"Б. Пироговская ул., 2с3","approx":0},{"n":425,"name":"Музей Яндекса","cat":"culture","sub":"Культура","map":"kh","lat":55.73397,"lon":37.58848,"addr":"ул. Льва Толстого, 16","approx":0},{"n":426,"name":"Дом-музей Герцена","cat":"culture","sub":"Культура","map":"kh","lat":55.74713,"lon":37.5919,"addr":"пер. Сивцев Вражек, 27","approx":0},{"n":427,"name":"Кремль","cat":"culture","sub":"Культура","map":"kh","lat":55.75162,"lon":37.61812,"addr":"Кремль","approx":0},{"n":428,"name":"Музей «Наша эпоха»","cat":"culture","sub":"Культура","map":"kh","lat":55.73277,"lon":37.58094,"addr":"Олсуфьевский пер., 6с2","approx":0},{"n":429,"name":"Третьяковская галерея на Крымском Валу","cat":"culture","sub":"Культура","map":"kh","lat":55.73481,"lon":37.60623,"addr":"ул. Крымский Вал, 10","approx":0},{"n":430,"name":"Галерея искусств Зураба Церетели","cat":"culture","sub":"Культура","map":"kh","lat":55.74103,"lon":37.59289,"addr":"ул. Пречистенка, 19","approx":0},{"n":431,"name":"Картинная галерея И. Глазунова","cat":"culture","sub":"Культура","map":"kh","lat":55.74637,"lon":37.60673,"addr":"ул. Волхонка, 13","approx":0},{"n":432,"name":"Картинная галерея А. Шилова","cat":"culture","sub":"Культура","map":"kh","lat":55.74905,"lon":37.6083,"addr":"ул. Знаменка, 5","approx":0},{"n":433,"name":"ГЭС-2","cat":"culture","sub":"Культура","map":"kh","lat":55.74275,"lon":37.61372,"addr":"Болотная наб., 15","approx":0},{"n":434,"name":"Храм Христа Спасителя","cat":"culture","sub":"Культура","map":"kh","lat":55.74452,"lon":37.60551,"addr":"ул. Волхонка, 15","approx":0},{"n":435,"name":"Новодевичий монастырь","cat":"culture","sub":"Культура","map":"kh","lat":55.72603,"lon":37.55577,"addr":"Новодевичий пр-д, 1","approx":0},{"n":436,"name":"Андреевский монастырь","cat":"culture","sub":"Культура","map":"kh","lat":55.71164,"lon":37.57446,"addr":"Андреевская наб.","approx":0},{"n":437,"name":"Зачатьевский монастырь","cat":"culture","sub":"Культура","map":"kh","lat":55.74127,"lon":37.59854,"addr":"2-й Зачатьевский пер.","approx":0},{"n":438,"name":"Московский дворец молодёжи","cat":"culture","sub":"Культура","map":"kh","lat":55.72697,"lon":37.57986,"addr":"Комсомольский пр-т, 28","approx":0},{"n":439,"name":"Музей им. М. А. Булгакова","cat":"culture","sub":"Культура","map":"kh","lat":55.767,"lon":37.5939,"addr":"Б. Садовая ул., 10","approx":0},{"n":440,"name":"МИРЛИ им. В. И. Даля","cat":"culture","sub":"Культура","map":"kh","lat":55.73587,"lon":37.59193,"addr":"Зубовский б-р, 15","approx":0},{"n":441,"name":"Лыжи в горнолыжном комплексе «Воробьёвы горы»","cat":"vg","sub":"Спорт","map":"kh","lat":55.70935,"lon":37.54639,"addr":"ул. Косыгина","approx":0},{"n":442,"name":"Сноуборд в горнолыжном комплексе «Воробьёвы горы»","cat":"vg","sub":"Спорт","map":"kh","lat":55.70935,"lon":37.54639,"addr":"ул. Косыгина","approx":0},{"n":443,"name":"Горнолыжная школа «Новая лига»","cat":"vg","sub":"Спорт","map":"kh","lat":55.7109,"lon":37.54676,"addr":"Воробьёвская наб.","approx":0},{"n":444,"name":"Центр пляжных видов спорта «Воробьёвы горы»","cat":"vg","sub":"Спорт","map":"kh","lat":55.71131,"lon":37.5389,"addr":"квадрат B7 на бумажной карте","approx":1},{"n":445,"name":"Кёрлинг в горнолыжном комплексе «Воробьёвы горы»","cat":"vg","sub":"Спорт","map":"kh","lat":55.70935,"lon":37.54639,"addr":"ул. Косыгина","approx":0},{"n":213,"name":"Московская канатная дорога","cat":"vg","sub":"Отдых и развлечения","map":"kh","lat":55.70792,"lon":37.54503,"addr":"ул. Косыгина","approx":0},{"n":216,"name":"Зиплайн Skypark Москва","cat":"vg","sub":"Отдых и развлечения","map":"kh","lat":55.71005,"lon":37.54156,"addr":"ул. Косыгина","approx":0},{"n":447,"name":"Эскалаторная галерея на Воробьёвых горах","cat":"vg","sub":"Отдых и развлечения","map":"kh","lat":55.70743,"lon":37.55396,"addr":"ул. Косыгина, 20","approx":0},{"n":450,"name":"Трамплин-Амбассадори","cat":"vg","sub":"Рестораны и кафе","map":"kh","lat":55.71078,"lon":37.54214,"addr":"квадрат B7 на бумажной карте","approx":1},{"n":451,"name":"Board & Вилка","cat":"vg","sub":"Рестораны и кафе","map":"kh","lat":55.71205,"lon":37.55316,"addr":"квадрат C7 на бумажной карте","approx":1},{"n":452,"name":"Аритмия","cat":"vg","sub":"Рестораны и кафе","map":"kh","lat":55.707,"lon":37.5514,"addr":"ул. Косыгина","approx":0},{"n":453,"name":"Музей оптических иллюзий Москвы","cat":"vg","sub":"Культура и отдых","map":"kh","lat":55.70596,"lon":37.54175,"addr":"квадрат B8 на бумажной карте","approx":1},{"n":454,"name":"Аллея спортивной славы","cat":"vg","sub":"Культура и отдых","map":"kh","lat":55.72116,"lon":37.55095,"addr":"ОК «Лужники»","approx":0}],"unplaced":[{"n":314,"name":"Культура","cat":"beauty","sub":"Косметология","map":"kh"},{"n":318,"name":"Эсквайер","cat":"beauty","sub":"Барбершопы","map":"kh"},{"n":319,"name":"Barberia","cat":"beauty","sub":"Барбершопы","map":"kh"},{"n":321,"name":"Культ","cat":"beauty","sub":"Барбершопы","map":"kh"},{"n":326,"name":"Море Превеншен","cat":"beauty","sub":"SPA","map":"kh"},{"n":327,"name":"Element Spa","cat":"beauty","sub":"SPA","map":"kh"},{"n":342,"name":"Discovery School Savvin","cat":"edu","sub":"Школы и лицеи","map":"kh"},{"n":343,"name":"Фанскул","cat":"edu","sub":"Школы и лицеи","map":"kh"},{"n":362,"name":"Montessori Hub","cat":"edu","sub":"Детские сады","map":"kh"},{"n":371,"name":"Спортивная школа «Весёлые коньки»","cat":"edu","sub":"Развивающие учреждения","map":"kh"},{"n":395,"name":"Гастро Бутик Хамон & Сыр","cat":"shop","sub":"Гастрономы и винотеки","map":"kh"},{"n":398,"name":"Molecule","cat":"shop","sub":"Парфюмерия и косметика","map":"kh"},{"n":402,"name":"HomeArt","cat":"shop","sub":"Товары для дома и интерьера","map":"kh"},{"n":403,"name":"Артик","cat":"shop","sub":"Товары для дома и интерьера","map":"kh"},{"n":404,"name":"Dari Gallery","cat":"shop","sub":"Товары для дома и интерьера","map":"kh"},{"n":414,"name":"Hand Yoga","cat":"sport","sub":"Спорт и здоровье","map":"kh"},{"n":415,"name":"Тренировки по бадминтону","cat":"sport","sub":"Спорт и здоровье","map":"kh"},{"n":416,"name":"Reboot SW","cat":"sport","sub":"Спорт и здоровье","map":"kh"},{"n":446,"name":"Спортивный зал Bar Gym","cat":"vg","sub":"Спорт","map":"kh"},{"n":448,"name":"Парк Альпак «Симба»","cat":"vg","sub":"Отдых и развлечения","map":"kh"},{"n":449,"name":"Панорама падел","cat":"vg","sub":"Отдых и развлечения","map":"kh"}],"lu":[{"n":1,"name":"Футбольный манеж «Новый футбол»","sub":"Футбол","kids":1,"lat":55.72325,"lon":37.54685,"b":null},{"n":2,"name":"Открытое футбольное поле с искусственным покрытием и подогревом № 2","sub":"Футбол","kids":0,"lat":55.7197,"lon":37.5515,"b":null},{"n":3,"name":"Открытое футбольное поле с искусственным покрытием и подогревом № 3","sub":"Футбол","kids":0,"lat":55.72063,"lon":37.55318,"b":null},{"n":4,"name":"Открытое футбольное поле с искусственным покрытием и подогревом № 4","sub":"Футбол","kids":0,"lat":55.72018,"lon":37.55397,"b":null},{"n":5,"name":"Открытое футбольное поле с искусственным покрытием и подогревом № 5","sub":"Футбол","kids":0,"lat":55.71969,"lon":37.5548,"b":null},{"n":6,"name":"Открытое футбольное поле с искусственным покрытием и подогревом № 6","sub":"Футбол","kids":0,"lat":55.71473,"lon":37.54859,"b":null},{"n":7,"name":"Открытое футбольное поле с искусственным покрытием и подогревом № 7","sub":"Футбол","kids":0,"lat":55.71676,"lon":37.54779,"b":null},{"n":8,"name":"Открытое футбольное поле с искусственным покрытием и подогревом № 8","sub":"Футбол","kids":0,"lat":55.71728,"lon":37.54641,"b":null},{"n":9,"name":"Открытое футбольное поле с искусственным покрытием и подогревом № 9","sub":"Футбол","kids":0,"lat":55.71773,"lon":37.54718,"b":null},{"n":10,"name":"Открытое футбольное поле № 10 с натуральным газоном","sub":"Футбол","kids":0,"lat":55.72486,"lon":37.54686,"b":null},{"n":11,"name":"Открытое футбольное поле № 11 с натуральным газоном","sub":"Футбол","kids":0,"b":"II"},{"n":12,"name":"Открытая площадка для мини-футбола с искусственным покрытием и подогревом № 12","sub":"Футбол","kids":0,"lat":55.71836,"lon":37.55238,"b":null},{"n":13,"name":"Открытая площадка для мини-футбола с искусственным покрытием и подогревом № 13","sub":"Футбол","kids":0,"lat":55.71832,"lon":37.55478,"b":null},{"n":14,"name":"Открытая площадка для мини-футбола с искусственным покрытием и подогревом № 14","sub":"Футбол","kids":0,"lat":55.71641,"lon":37.55849,"b":null},{"n":15,"name":"Открытая площадка для мини-футбола с искусственным покрытием и подогревом № 16","sub":"Футбол","kids":0,"lat":55.71486,"lon":37.55844,"b":null},{"n":16,"name":"Открытая площадка для мини-футбола с искусственным покрытием и подогревом № 17","sub":"Футбол","kids":0,"lat":55.71415,"lon":37.55921,"b":null},{"n":17,"name":"Открытая площадка для мини-футбола с искусственным покрытием и подогревом № 24","sub":"Футбол","kids":0,"lat":55.72586,"lon":37.54694,"b":null},{"n":18,"name":"Открытая площадка для мини-футбола с искусственным покрытием и подогревом № 28","sub":"Футбол","kids":0,"lat":55.72409,"lon":37.54501,"b":null},{"n":19,"name":"Открытая площадка для мини-футбола с искусственным покрытием и подогревом № 38","sub":"Футбол","kids":0,"lat":55.71818,"lon":37.54631,"b":null},{"n":20,"name":"Закрытая площадка для мини-футбола с искусственным покрытием № 20","sub":"Футбол","kids":0,"lat":55.71879,"lon":37.55108,"b":null},{"n":21,"name":"Многофункциональный зал № 3 в УСЗ «Дружба»","sub":"Футбол","kids":0,"b":"IV"},{"n":22,"name":"Большой теннис: спортивный клуб «Мультиспорт»","sub":"Теннис","kids":0,"b":"X"},{"n":23,"name":"Теннисный клуб «ТеннисВИП»","sub":"Теннис","kids":0,"b":"XVI"},{"n":24,"name":"Теннисный клуб Tenniseasy","sub":"Теннис","kids":0,"b":"XVI"},{"n":25,"name":"Школа тенниса Racket Tennis","sub":"Теннис","kids":1,"b":"II"},{"n":26,"name":"Школа тенниса Tennis Go","sub":"Теннис","kids":0,"b":"III"},{"n":27,"name":"Теннисный клуб Tennis Time","sub":"Теннис","kids":0,"b":"III"},{"n":28,"name":"Теннисный клуб CourtClub","sub":"Теннис","kids":0,"b":"III"},{"n":29,"name":"Школа тенниса «ТопТеннис»","sub":"Теннис","kids":1,"b":"II"},{"n":30,"name":"Школа тенниса «Чемпион»","sub":"Теннис","kids":1,"lat":55.71941,"lon":37.55043,"b":"II"},{"n":31,"name":"Открытый теннисный корт с искусственной травой № 24","sub":"Теннис","kids":0,"lat":55.72068,"lon":37.54805,"b":"XVI"},{"n":32,"name":"Открытый теннисный корт с искусственной травой № 25","sub":"Теннис","kids":0,"lat":55.72568,"lon":37.54601,"b":"XVI"},{"n":33,"name":"Открытый теннисный корт с искусственной травой № 29","sub":"Теннис","kids":0,"lat":55.72364,"lon":37.54544,"b":"XVI"},{"n":34,"name":"Открытый теннисный корт с грунтовым покрытием № 26","sub":"Теннис","kids":0,"lat":55.72532,"lon":37.54546,"b":"XVI"},{"n":35,"name":"Открытый теннисный корт с грунтовым покрытием","sub":"Теннис","kids":0,"b":"III"},{"n":36,"name":"Открытый теннисный корт с покрытием «хард» № 27","sub":"Теннис","kids":0,"lat":55.72497,"lon":37.5451,"b":"XVI"},{"n":37,"name":"Крытый теннисный корт","sub":"Теннис","kids":0,"b":"III"},{"n":38,"name":"Крытый теннисный корт","sub":"Теннис","kids":0,"b":"X"},{"n":39,"name":"Крытый теннисный корт","sub":"Теннис","kids":0,"b":"II"},{"n":40,"name":"Настольный теннис: Дворец тенниса «Лужники»","sub":"Теннис","kids":1,"b":"III"},{"n":41,"name":"Настольный теннис: спортивный клуб «Мультиспорт»","sub":"Теннис","kids":0,"b":"X"},{"n":42,"name":"Настольный теннис: Малая арена","sub":"Теннис","kids":1,"b":"II"},{"n":43,"name":"Настольный теннис: Crocus Fitness","sub":"Теннис","kids":0,"b":"V"},{"n":44,"name":"Настольный теннис: Ледовый дворец «Кристалл»","sub":"Теннис","kids":0,"b":"XII"},{"n":45,"name":"Бадминтон: Дворец тенниса «Лужники»","sub":"Ракетлон","kids":0,"b":"III"},{"n":46,"name":"Бадминтон: спортивный клуб «Мультиспорт»","sub":"Ракетлон","kids":0,"b":"X"},{"n":47,"name":"Бадминтон: Малая арена","sub":"Ракетлон","kids":0,"b":"II"},{"n":48,"name":"Бадминтон: Crocus Fitness","sub":"Ракетлон","kids":0,"b":"V"},{"n":49,"name":"Падел: школа Padel Friends","sub":"Ракетлон","kids":1,"b":"I"},{"n":50,"name":"Падел: спортивный клуб «Мультиспорт»","sub":"Ракетлон","kids":0,"b":"X"},{"n":51,"name":"Падел: Дворец тенниса «Лужники»","sub":"Ракетлон","kids":0,"b":"III"},{"n":52,"name":"Падел: теннисный клуб Tenniseasy","sub":"Ракетлон","kids":0,"b":"XVI"},{"n":53,"name":"Сквош: спортивный клуб «Мультиспорт»","sub":"Ракетлон","kids":0,"b":"X"},{"n":54,"name":"Сквош: Дворец тенниса «Лужники»","sub":"Ракетлон","kids":0,"b":"III"},{"n":55,"name":"Открытая волейбольная площадка","sub":"Игровые виды спорта","kids":0,"lat":55.71168,"lon":37.55719,"b":null},{"n":56,"name":"Волейбол: универсальный зал в Малой арене","sub":"Игровые виды спорта","kids":0,"b":"II"},{"n":57,"name":"Волейбол: универсальный зал «Дружба»","sub":"Игровые виды спорта","kids":0,"b":"IV"},{"n":58,"name":"Центр уличного баскетбола «Под мостом»","sub":"Игровые виды спорта","kids":0,"lat":55.71383,"lon":37.56294,"b":null},{"n":59,"name":"Баскетбол: универсальный зал в Малой арене","sub":"Игровые виды спорта","kids":0,"b":"II"},{"n":60,"name":"Баскетбол: универсальный зал «Дружба»","sub":"Игровые виды спорта","kids":0,"b":"IV"},{"n":61,"name":"Хоккей: Ледовый дворец «Кристалл»","sub":"Зимние виды спорта","kids":0,"b":"XII"},{"n":62,"name":"Открытый сезонный каток «Южный полюс»","sub":"Зимние виды спорта","kids":0,"b":"VII"},{"n":63,"name":"Каток на корте","sub":"Зимние виды спорта","kids":0,"lat":55.71188,"lon":37.56541,"b":null},{"n":64,"name":"Мультимедийный каток «Лужники»","sub":"Зимние виды спорта","kids":0,"lat":55.71378,"lon":37.55061,"b":null},{"n":65,"name":"Лыжные тренировки: Crocus Fitness","sub":"Зимние виды спорта","kids":0,"b":"V"},{"n":66,"name":"Лыжные тренировки: клуб «ЯСПОРТ»","sub":"Зимние виды спорта","kids":0,"b":"XIV"},{"n":67,"name":"Лыжные тренировки: #SlimFitClub","sub":"Зимние виды спорта","kids":0,"b":"XV"},{"n":68,"name":"Лыжно-биатлонная трасса","sub":"Зимние виды спорта","kids":0,"lat":55.716,"lon":37.56134,"b":null},{"n":69,"name":"Лыжно-биатлонный клуб ProBiathlon","sub":"Зимние виды спорта","kids":0,"lat":55.71568,"lon":37.56189,"b":"VII"},{"n":70,"name":"Лыжные тренировки: студия AirFit","sub":"Зимние виды спорта","kids":0,"b":"III"},{"n":71,"name":"Биатлон: клуб ProBiathlon","sub":"Зимние виды спорта","kids":0,"lat":55.71566,"lon":37.5608,"b":null},{"n":72,"name":"Бассейн: Аквакомплекс «Лужники»","sub":"Водные виды спорта","kids":0,"b":"V"},{"n":73,"name":"Открытый плавательный комплекс","sub":"Водные виды спорта","kids":0,"lat":55.71194,"lon":37.55664,"b":null},{"n":74,"name":"Бассейн: центр самбо и бокса","sub":"Водные виды спорта","kids":0,"b":"IX"},{"n":75,"name":"Бассейн: спортивный клуб «Мультиспорт»","sub":"Водные виды спорта","kids":1,"b":"X"},{"n":76,"name":"Аквааэробика: Аквакомплекс «Лужники»","sub":"Водные виды спорта","kids":0,"b":"V"},{"n":77,"name":"Аквааэробика: «Мультиспорт»","sub":"Водные виды спорта","kids":0,"b":"X"},{"n":78,"name":"Аквааэробика: Crocus Fitness","sub":"Водные виды спорта","kids":0,"b":"V"},{"n":79,"name":"Surf club NALU BALoO","sub":"Водные виды спорта","kids":0,"b":"V"},{"n":80,"name":"Surfway Moscow","sub":"Водные виды спорта","kids":0,"b":"V"},{"n":81,"name":"Школа плавания Swim Rocket","sub":"Водные виды спорта","kids":1,"b":"IX"},{"n":82,"name":"Школа спортивного плавания Silver Swim","sub":"Водные виды спорта","kids":0,"b":"V"},{"n":83,"name":"Школа плавания «Лужники»","sub":"Водные виды спорта","kids":1,"b":"V"},{"n":84,"name":"Школа плавания: «Мультиспорт»","sub":"Водные виды спорта","kids":0,"b":"X"},{"n":85,"name":"Школа плавания Easyswim","sub":"Водные виды спорта","kids":1,"b":"V"},{"n":86,"name":"Школа плавания № 1","sub":"Водные виды спорта","kids":1,"b":"IX"},{"n":87,"name":"Школа плавания № 1","sub":"Водные виды спорта","kids":1,"b":"IX"},{"n":88,"name":"Школа плавания Wow swimmer","sub":"Водные виды спорта","kids":0,"b":"IX"},{"n":89,"name":"Школа плавания «Моя стихия»","sub":"Водные виды спорта","kids":1,"b":"V"},{"n":90,"name":"Школа плавания Elite Swim Club","sub":"Водные виды спорта","kids":0,"b":"V"},{"n":91,"name":"Школа плавания Hydro Hooligans","sub":"Водные виды спорта","kids":1,"b":"V"},{"n":92,"name":"Школа плавания «Аквамания»","sub":"Водные виды спорта","kids":1,"b":"IX"},{"n":93,"name":"Школа плавания Ok, Swim","sub":"Водные виды спорта","kids":1,"b":"IX"},{"n":94,"name":"Школа фридайвинга ArcticFree","sub":"Водные виды спорта","kids":0,"b":"V"},{"n":95,"name":"Аквапарк в аквакомплексе «Лужники»","sub":"Водные виды спорта","kids":1,"b":"V"},{"n":96,"name":"Функциональный тренинг: Crocus Fitness","sub":"Фитнес","kids":0,"b":"V"},{"n":97,"name":"Функциональный тренинг: «Мультиспорт»","sub":"Фитнес","kids":0,"b":"X"},{"n":98,"name":"CrossFit 19.05","sub":"Фитнес","kids":0,"b":"I"},{"n":99,"name":"Фитнес-студия «Берег»","sub":"Фитнес","kids":0,"b":"VI"},{"n":100,"name":"Функциональный тренинг: #SlimFitClub","sub":"Фитнес","kids":0,"b":"XV"},{"n":101,"name":"Академия бокса: функциональный тренинг","sub":"Фитнес","kids":0,"b":"V"},{"n":102,"name":"Центр физического развития «Талант»","sub":"Фитнес","kids":0,"b":"III"},{"n":103,"name":"Фитнес-клуб GtFit","sub":"Фитнес","kids":0,"b":"III"},{"n":104,"name":"Студия пилатеса и фитнеса AirFit","sub":"Фитнес","kids":0,"b":"III"},{"n":105,"name":"Тренажёрный зал: CrossFit 19.05","sub":"Фитнес","kids":0,"b":"I"},{"n":106,"name":"Тренажёрный зал: Crocus Fitness","sub":"Фитнес","kids":0,"b":"V"},{"n":107,"name":"Тренажёрный зал: Дворец тенниса","sub":"Фитнес","kids":0,"b":"III"},{"n":108,"name":"Тренажёрный зал: «Мультиспорт»","sub":"Фитнес","kids":0,"b":"X"},{"n":109,"name":"Тренажёрный зал: «Берег»","sub":"Фитнес","kids":0,"b":"VI"},{"n":110,"name":"Тренажёрный зал: Академия бокса","sub":"Фитнес","kids":0,"b":"V"},{"n":111,"name":"Тренажёрный зал: «Талант»","sub":"Фитнес","kids":0,"b":"III"},{"n":112,"name":"Тренажёрный зал: GtFit","sub":"Фитнес","kids":0,"b":"III"},{"n":113,"name":"Йога: Crocus Fitness","sub":"Фитнес","kids":0,"b":"V"},{"n":114,"name":"Йога","sub":"Фитнес","kids":0,"b":"XV"},{"n":115,"name":"Йога: «Мультиспорт»","sub":"Фитнес","kids":0,"b":"X"},{"n":116,"name":"Йога: CrossFit 19.05","sub":"Фитнес","kids":0,"b":"I"},{"n":117,"name":"Пилатес: Crocus Fitness","sub":"Фитнес","kids":0,"b":"V"},{"n":118,"name":"Пилатес: «Мультиспорт»","sub":"Фитнес","kids":0,"b":"X"},{"n":119,"name":"Пилатес: студия AirFit","sub":"Фитнес","kids":0,"b":"III"},{"n":120,"name":"Студия «Мир пилатеса»","sub":"Фитнес","kids":0,"b":"III"},{"n":121,"name":"Стретчинг: CrossFit 19.05","sub":"Фитнес","kids":0,"b":"I"},{"n":122,"name":"Стретчинг: Crocus Fitness","sub":"Фитнес","kids":0,"b":"V"},{"n":123,"name":"Стретчинг: «Мультиспорт»","sub":"Фитнес","kids":0,"b":"X"},{"n":124,"name":"Стретчинг: #SlimFitClub","sub":"Фитнес","kids":0,"b":"XV"},{"n":125,"name":"Smstretching","sub":"Фитнес","kids":0,"b":"III"},{"n":126,"name":"TRX: Crocus Fitness","sub":"Фитнес","kids":0,"b":"V"},{"n":127,"name":"TRX: #SlimFitClub","sub":"Фитнес","kids":0,"b":"XV"},{"n":128,"name":"TRX: «Мультиспорт»","sub":"Фитнес","kids":0,"b":"X"},{"n":129,"name":"TRX: «Берег»","sub":"Фитнес","kids":0,"b":"VI"},{"n":130,"name":"Кроссфит: Crocus Fitness","sub":"Фитнес","kids":0,"b":"V"},{"n":131,"name":"Кроссфит: CrossFit 19.05","sub":"Фитнес","kids":0,"b":"I"},{"n":132,"name":"Кроссфит: «Мультиспорт»","sub":"Фитнес","kids":0,"b":"X"},{"n":133,"name":"Кроссфит: Академия бокса","sub":"Фитнес","kids":0,"b":"V"},{"n":134,"name":"Боевой фитнес: «Берег»","sub":"Фитнес","kids":0,"b":"VI"},{"n":135,"name":"Боевой фитнес: «Мультиспорт»","sub":"Фитнес","kids":0,"b":"X"},{"n":136,"name":"Боевой фитнес: Академия бокса","sub":"Фитнес","kids":0,"b":"V"},{"n":150,"name":"Велоспорт: Crocus Fitness","sub":"Фитнес","kids":0,"b":"V"},{"n":152,"name":"Сайкл в студии Rock the Cycle","sub":"Фитнес","kids":0,"b":"III"},{"n":153,"name":"Студия триатлона Trilogy","sub":"Фитнес","kids":0,"b":"V"},{"n":154,"name":"Танцы: «Мультиспорт»","sub":"Фитнес","kids":0,"b":"X"},{"n":155,"name":"Танцы: Crocus Fitness","sub":"Фитнес","kids":0,"b":"V"},{"n":156,"name":"Танцы: Ледовый дворец «Кристалл»","sub":"Фитнес","kids":0,"b":"XII"},{"n":160,"name":"Воркаут-площадка","sub":"Фитнес","kids":0,"lat":55.72137,"lon":37.54232,"b":null},{"n":161,"name":"Воркаут-площадка","sub":"Фитнес","kids":0,"lat":55.71698,"lon":37.54419,"b":null},{"n":162,"name":"Воркаут-площадка","sub":"Фитнес","kids":0,"lat":55.71137,"lon":37.55595,"b":null},{"n":163,"name":"Воркаут-площадка","sub":"Фитнес","kids":0,"lat":55.71154,"lon":37.56633,"b":null},{"n":164,"name":"Воркаут-площадка","sub":"Фитнес","kids":0,"lat":55.71309,"lon":37.55336,"b":null},{"n":165,"name":"Воркаут-площадка","sub":"Фитнес","kids":0,"lat":55.71842,"lon":37.561,"b":null},{"n":137,"name":"Беговые тренировки: Crocus Fitness","sub":"Лёгкая атлетика и бег","kids":0,"b":"V"},{"n":138,"name":"Беговые тренировки: CrossFit 19.05","sub":"Лёгкая атлетика и бег","kids":0,"b":"I"},{"n":139,"name":"Беговые тренировки: #SlimFitClub","sub":"Лёгкая атлетика и бег","kids":0,"b":"XV"},{"n":140,"name":"Беговые тренировки: клуб «ЯСПОРТ»","sub":"Лёгкая атлетика и бег","kids":0,"b":"XIV"},{"n":141,"name":"Беговой клуб Begym","sub":"Лёгкая атлетика и бег","kids":0,"b":"VII"},{"n":142,"name":"Уралхим Run Factory","sub":"Лёгкая атлетика и бег","kids":0,"lat":55.71121,"lon":37.55736,"b":null},{"n":143,"name":"Беговые тренировки: GtFit","sub":"Лёгкая атлетика и бег","kids":0,"b":"III"},{"n":144,"name":"Беговые легкоатлетические дорожки","sub":"Лёгкая атлетика и бег","kids":0,"b":"XIII"},{"n":145,"name":"Беговые легкоатлетические дорожки","sub":"Лёгкая атлетика и бег","kids":0,"lat":55.71942,"lon":37.55197,"b":null},{"n":146,"name":"Беговые легкоатлетические дорожки","sub":"Лёгкая атлетика и бег","kids":0,"b":"XVI"},{"n":147,"name":"Беговая дорожка вдоль Лужнецкой набережной","sub":"Лёгкая атлетика и бег","kids":0,"lat":55.71569,"lon":37.54584,"b":null},{"n":148,"name":"Скандинавская ходьба: #SlimFitClub","sub":"Лёгкая атлетика и бег","kids":0,"b":"XV"},{"n":149,"name":"Скандинавская ходьба: AirFit","sub":"Лёгкая атлетика и бег","kids":0,"b":"III"},{"n":151,"name":"Велоспорт: клуб «ЯСПОРТ»","sub":"Лёгкая атлетика и бег","kids":1,"b":"XIV"},{"n":157,"name":"Триатлон-центр","sub":"Лёгкая атлетика и бег","kids":0,"b":"V"},{"n":158,"name":"Триатлон: клуб «ЯСПОРТ»","sub":"Лёгкая атлетика и бег","kids":0,"b":"XIV"},{"n":159,"name":"Студия триатлона Trilogy","sub":"Лёгкая атлетика и бег","kids":0,"b":"V"},{"n":166,"name":"Спортивно-стрелковый клуб","sub":"Единоборства, стрельба, мото, гольф","kids":0,"b":"XI"},{"n":167,"name":"Единоборства в CrossFit 19.05","sub":"Единоборства, стрельба, мото, гольф","kids":0,"b":"I"},{"n":168,"name":"Единоборства в фитнес-студии «Берег»","sub":"Единоборства, стрельба, мото, гольф","kids":0,"b":"VI"},{"n":169,"name":"Единоборства в международном центре самбо","sub":"Единоборства, стрельба, мото, гольф","kids":0,"b":"IX"},{"n":170,"name":"Самбо в международном центре самбо","sub":"Единоборства, стрельба, мото, гольф","kids":0,"b":"IX"},{"n":171,"name":"Бокс в международном центре бокса","sub":"Единоборства, стрельба, мото, гольф","kids":0,"b":"IX"},{"n":172,"name":"Академия бокса","sub":"Единоборства, стрельба, мото, гольф","kids":0,"b":"V"},{"n":173,"name":"Бокс в спортивном клубе «Мультиспорт»","sub":"Единоборства, стрельба, мото, гольф","kids":0,"b":"X"},{"n":174,"name":"Бокс в Crocus Fitness","sub":"Единоборства, стрельба, мото, гольф","kids":0,"b":"V"},{"n":175,"name":"Фехтование в спортивном клубе «Мультиспорт»","sub":"Единоборства, стрельба, мото, гольф","kids":1,"b":"X"},{"n":176,"name":"Клуб единоборств Namode","sub":"Единоборства, стрельба, мото, гольф","kids":0,"b":"X"},{"n":177,"name":"Клуб единоборств Rage.Fightclub","sub":"Единоборства, стрельба, мото, гольф","kids":0,"b":"X"},{"n":178,"name":"Мотошкола Motoshkola club","sub":"Единоборства, стрельба, мото, гольф","kids":0,"lat":55.72086,"lon":37.55655,"b":null},{"n":179,"name":"Мотошкола Марата Канкадзе","sub":"Единоборства, стрельба, мото, гольф","kids":0,"lat":55.71535,"lon":37.56134,"b":"VII"},{"n":180,"name":"Гольф: спортивный клуб «Мультиспорт»","sub":"Единоборства, стрельба, мото, гольф","kids":0,"b":"X"},{"n":181,"name":"Гольф-клуб Indoor Golf Moscow","sub":"Единоборства, стрельба, мото, гольф","kids":0,"b":"III"},{"n":182,"name":"Aquamarine","sub":"Рестораны и кафе","kids":0,"b":"V"},{"n":183,"name":"Olymp Junior","sub":"Рестораны и кафе","kids":0,"lat":55.71186,"lon":37.55486,"b":null},{"n":184,"name":"Veranda Riverside by Ars Royal Group","sub":"Рестораны и кафе","kids":0,"lat":55.71562,"lon":37.54679,"b":null},{"n":185,"name":"The Villa","sub":"Рестораны и кафе","kids":0,"lat":55.71439,"lon":37.5499,"b":null},{"n":186,"name":"FeiFan BBQ","sub":"Рестораны и кафе","kids":0,"lat":55.71335,"lon":37.55165,"b":null},{"n":187,"name":"Умами","sub":"Рестораны и кафе","kids":0,"lat":55.71198,"lon":37.55965,"b":null},{"n":188,"name":"Кофемания","sub":"Рестораны и кафе","kids":0,"b":"III"},{"n":189,"name":"La Raquette Café by Pinskiy&Co","sub":"Рестораны и кафе","kids":0,"b":"III"},{"n":190,"name":"Гастропространство Pinskiy&Co","sub":"Рестораны и кафе","kids":0,"lat":55.7137,"lon":37.55225,"b":null},{"n":191,"name":"Mirris","sub":"Рестораны и кафе","kids":0,"lat":55.72376,"lon":37.5439,"b":null},{"n":192,"name":"Aqua Café","sub":"Рестораны и кафе","kids":0,"b":"V"},{"n":193,"name":"Сёрф-кафе NALU BALoO","sub":"Рестораны и кафе","kids":0,"b":"V"},{"n":194,"name":"Лу","sub":"Рестораны и кафе","kids":0,"lat":55.71234,"lon":37.56026,"b":null},{"n":195,"name":"La Raquette Cafe","sub":"Рестораны и кафе","kids":0,"b":"III"},{"n":196,"name":"La Raquette X Twinkle Kids","sub":"Рестораны и кафе","kids":0,"b":"III"},{"n":197,"name":"Ешь беги живи","sub":"Рестораны и кафе","kids":0,"lat":55.71133,"lon":37.55666,"b":null},{"n":198,"name":"Pims","sub":"Рестораны и кафе","kids":0,"b":"V"},{"n":199,"name":"Ласточка","sub":"Рестораны и кафе","kids":0,"lat":55.71159,"lon":37.56757,"b":null},{"n":200,"name":"Студия красоты Volange","sub":"Красота и здоровье","kids":0,"b":"V"},{"n":201,"name":"Массажный салон V SPA","sub":"Красота и здоровье","kids":0,"b":"V"},{"n":202,"name":"Термально-оздоровительный комплекс","sub":"Красота и здоровье","kids":0,"b":"V"},{"n":203,"name":"Комплекс бань в центре самбо и центре бокса","sub":"Красота и здоровье","kids":0,"b":"IX"},{"n":204,"name":"СПА-комплекс в ледовом дворце «Кристалл»","sub":"Красота и здоровье","kids":0,"b":"XII"},{"n":205,"name":"СПА-центр во дворце гимнастики","sub":"Красота и здоровье","kids":0,"b":"VIII"},{"n":206,"name":"Банный комплекс в клубе «Мультиспорт»","sub":"Красота и здоровье","kids":0,"b":"X"},{"n":207,"name":"«Спа-комплекс H2O»","sub":"Красота и здоровье","kids":0,"b":"III"},{"n":208,"name":"Медицинский центр во дворце гимнастики","sub":"Красота и здоровье","kids":0,"b":"VIII"},{"n":209,"name":"Клиника спортивной медицины «Лужники»","sub":"Красота и здоровье","kids":0,"b":"I"},{"n":210,"name":"Центр восстановления LabRehab","sub":"Красота и здоровье","kids":0,"b":"III"},{"n":211,"name":"Клиника Health IQ","sub":"Красота и здоровье","kids":0,"b":"IX"},{"n":212,"name":"Концертный зал: Большая спортивная арена","sub":"Развлечения и шопинг","kids":0,"b":"I"},{"n":214,"name":"Причал водного транспорта «Лужники Северный»","sub":"Развлечения и шопинг","kids":0,"lat":55.72667,"lon":37.54585,"b":null},{"n":215,"name":"Уличный скалодром Big Wall Sport","sub":"Развлечения и шопинг","kids":0,"lat":55.72318,"lon":37.54511,"b":null},{"n":217,"name":"ПандаПарк","sub":"Развлечения и шопинг","kids":1,"lat":55.71925,"lon":37.55858,"b":"I"},{"n":218,"name":"Экскурсионный центр «Лужники»","sub":"Развлечения и шопинг","kids":1,"b":"I"},{"n":219,"name":"Прокат спортивного инвентаря","sub":"Развлечения и шопинг","kids":0,"lat":55.71572,"lon":37.54975,"b":null},{"n":220,"name":"Прокат спортивного инвентаря","sub":"Развлечения и шопинг","kids":0,"lat":55.71452,"lon":37.55124,"b":null},{"n":221,"name":"Прокат спортивного инвентаря","sub":"Развлечения и шопинг","kids":0,"lat":55.71416,"lon":37.55187,"b":null},{"n":222,"name":"Прокат спортивного инвентаря","sub":"Развлечения и шопинг","kids":0,"lat":55.71296,"lon":37.55429,"b":"V"},{"n":223,"name":"Выставочное пространство Спорт+Арт","sub":"Развлечения и шопинг","kids":0,"b":"III"},{"n":224,"name":"Торговая галерея в аквакомплексе «Лужники»","sub":"Развлечения и шопинг","kids":0,"b":"V"},{"n":225,"name":"Магазин Sports Habits","sub":"Развлечения и шопинг","kids":0,"b":"III"},{"n":226,"name":"Игровая площадка на Аллее славы","sub":"Дети","kids":1,"lat":55.72115,"lon":37.55058,"b":null},{"n":227,"name":"Игровая площадка «Кораблик»","sub":"Дети","kids":1,"lat":55.71562,"lon":37.54785,"b":null},{"n":228,"name":"Академия PARIS SAINT-GERMAIN","sub":"Дети","kids":1,"lat":55.72261,"lon":37.54546,"b":null},{"n":229,"name":"Школа ФК «Лужники»","sub":"Дети","kids":1,"lat":55.71513,"lon":37.54853,"b":"XIII"},{"n":230,"name":"Футбольная школа «Спартак Будущее»","sub":"Дети","kids":1,"b":"XIII"},{"n":231,"name":"Футбольная академия «Динамо» имени Л. И. Яшина","sub":"Дети","kids":1,"b":null},{"n":232,"name":"Школа футбола для девочек GirlPower","sub":"Дети","kids":1,"b":null},{"n":233,"name":"Футбольная академия Никитина","sub":"Дети","kids":1,"lat":55.71403,"lon":37.56373,"b":null},{"n":234,"name":"Футбольная школа «Центр подготовки футболистов 11»","sub":"Дети","kids":1,"b":"XVI"},{"n":235,"name":"Детско-юношеская спортивная школа по большому теннису","sub":"Дети","kids":1,"b":"II"},{"n":236,"name":"Детская теннисная школа","sub":"Дети","kids":1,"b":"III"},{"n":237,"name":"Теннисная академия «Спартак»","sub":"Дети","kids":1,"b":"III"},{"n":238,"name":"New League Badminton Club","sub":"Дети","kids":1,"b":"III"},{"n":239,"name":"Центр гимнастики Ирины Винер-Усмановой","sub":"Дети","kids":1,"b":"VIII"},{"n":240,"name":"Академия первых — центр гимнастики Елены Карпушенко","sub":"Дети","kids":1,"b":"II"},{"n":241,"name":"Европейский гимнастический центр","sub":"Дети","kids":1,"b":"V"},{"n":242,"name":"Центр художественной гимнастики MIG","sub":"Дети","kids":1,"b":"IX"},{"n":243,"name":"Школа фигурного катания Polar team","sub":"Дети","kids":1,"lat":55.71483,"lon":37.55071,"b":null},{"n":244,"name":"Спортивный клуб I like ice","sub":"Дети","kids":1,"b":"XII"}],"lub":[{"id":"I","name":"Большая спортивная арена","lat":55.7157,"lon":37.554,"items":[49,98,105,116,121,131,138,167,209,212,217,218]},{"id":"II","name":"Малая арена","lat":55.7183,"lon":37.54922,"items":[11,25,29,30,39,42,47,56,59,230,235,240]},{"id":"III","name":"Дворец тенниса «Лужники»","lat":55.71256,"lon":37.56426,"items":[26,27,28,35,37,40,45,51,54,70,102,103,104,107,111,112,119,120,125,143,149,152,181,188,189,195,196,207,210,223,225,236,237,238]},{"id":"IV","name":"Универсальный спортивный зал «Дружба»","lat":55.71255,"lon":37.56657,"items":[21,57,60]},{"id":"V","name":"Аквакомплекс «Лужники»","lat":55.713,"lon":37.55861,"items":[43,48,65,72,76,78,79,80,82,83,85,89,90,91,94,95,96,101,106,110,113,117,122,126,130,133,136,137,150,153,155,157,159,172,174,182,192,193,198,200,201,202,222,224,241]},{"id":"VI","name":"Фитнес-студия «Берег»","lat":55.71172,"lon":37.5579,"items":[99,109,129,134,168]},{"id":"VII","name":"Южный спортивный центр","lat":55.71483,"lon":37.56123,"items":[62,69,141,179]},{"id":"VIII","name":"Дворец гимнастики Ирины Винер-Усмановой","lat":55.71741,"lon":37.56245,"items":[205,208,239]},{"id":"IX","name":"Международный центр самбо и центр бокса","lat":55.72308,"lon":37.55209,"items":[74,81,86,87,88,92,93,169,170,171,203,211,242]},{"id":"X","name":"Спортивный клуб «Мультиспорт»","lat":55.72147,"lon":37.54945,"items":[22,38,41,46,50,53,75,77,84,97,108,115,118,123,128,132,135,154,173,175,176,177,180,206]},{"id":"XI","name":"Спортивно-стрелковый клуб","lat":55.7203,"lon":37.54645,"items":[166]},{"id":"XII","name":"Ледовый дворец «Кристалл»","lat":55.71959,"lon":37.54493,"items":[44,61,156,204,244]},{"id":"XIII","name":"Северный спортивный центр","lat":55.71969,"lon":37.5523,"items":[144,229,230]},{"id":"XIV","name":"Клуб «ЯСПОРТ»","lat":55.7221,"lon":37.54258,"items":[66,140,151,158]},{"id":"XV","name":"Студия персонального тренинга #SlimFitClub","lat":55.72568,"lon":37.54601,"items":[67,100,114,124,127,139,148]},{"id":"XVI","name":"Спортивный городок","lat":55.72505,"lon":37.54605,"items":[23,24,31,32,33,34,36,52,146,234]}]};
+const BASE={"water": "CZ4UUa6U1sY1a1Y6S718eg25663cy2w3S2_689eqO2y45a0akM1a5E2K67eQ2WbsK6b_5T1OcD1Y5fK1lE1X10krG1J2S1N7S1Fd2Z2D1F8lL3rX2$1L5J1$26l9jb6X1Z3F3B8H1L22b50B2L316V6N7B1T1rP2O1N1 MU5yFdG2L9A1T68$6jL80V2pzaH1V8dB22h9D155z1x6x1H4pJ2V2X347P1X11aB1N118H1D1L2J17l97f07aB6B2B437dL1mjO1N1O1rN2N1D3R2P42bdn74L2H4D7PdtD118B7X62f753gX5H32f931gN3D1P9$7btf1jn5vdhj6rB11h94H2R21bR4B5zfPkN3T5z3Z7X4PbL2Z7jR253R1B6B1V4R1N8jR4hT49F55X96$5aD5S2Jf_1H5E4B8Q3z5I3N4S1R1w2H2y2R1w2B1w2nU29Q44Y5C1K4y1I2U1E3U2w4U5s5M3R4kjm5F4S69K18A2E2y6OiKJ11g81K1E323iC11e81qU13ic3G2U3G2y2Q8U92gI2K2a1U3y34ieig0y3W316y1U125Y3w24cS4my36I5v_2Z1Q1R1M2N3Q1L3oP2kN3iJ81z39B3H1T7D1F5P2z9B1x2F2$4BaVkjR12fV1L4f9N3DbL1Z5N1H9fz3qH18t7F40z25F18N18b1D17vD1t3fkP5sH4_1X6Y1D3G1P1I1N1Y2N2ghet0$1fH2a7gG2AhNbkmK1cU2F1q4G4$1K2$1uF1_2Z4G3F7sI1qvlD3iV1O5zdQ3T6E3N5_1R4M300S4x2O6Z3w4T3y9R2Ga57Z1K4lpjE1cE27kJ1A2Z1G2x2I3x2W2Z9Q5X4O4D3y17ud3H9E5t4N1E19cbU1jM1pqH1w2F2G53oD1I6dE43C46O3308W344iy5C1K6K1Q53eA1U3K2E7K1Y2gY1e2AaOk_2K7E2Q6C3QaC1U5E1Ec5G55U2tC6B1M4P1w3x2S5Z1I2P1O1T1C1$1qL18$4iV239bhat1$3L174R3R27hd0X8T73jbdl1L5V4T4R4$3D5L3N5R1Z22f74nR10j93x1$32d70B4N8T6XaZ1N3Z1F4N1J4L1X4tH5H1D414N1P3F2V3F2R2L3Z2$3F2x3F1z30x2g$2E1L2M1J2w1D3C3L4y5Z3C6Z1S3z1_4L1O4D1_4vG6dI49K66I7kQ6sG6C2EaY2y9O3w9Y1Y3A4Y6gO1A1W1M1U1M3C51eY1K269U3O4W4E5ybOc2icmgae3S3O3YeQaO2G21ey1y189K5S5O1y1w1w2G8GhY1M2O1sw8M3A38M1o08sC1g4w1S127W4K4C2U2K1I2A2A6M2G9mK3Y1KcoM8kKa1M21s51bA6607U3pO6L1E5F30 Qm_A2G1A21g7a702h53rub0hlX2Q16tmN1g5glqho9k8 KmyB2285047 MG1KZ5o2A1W12cccM5q2O1bU28U1kY17g93bfvah5J1D20hX2L3tF27adp5v0n87 wvI_a1W25U1bC1b2P1vrN17l0dC1X4cvm5I1K18E10U1 OD2SL173da6s1caig4cd0fjF1 ww1SW19O1cO1sgmhaP1bN1rdli SO1GK3A3K5fs$2J5gr CJ1Cy51c9bc0 MB2_$6jE19a9hdT27b9R27l89g4Y1S5 E_1IW6oS22mbcF1L32he38e Az1GE7j17c1k8ac0cr1b CL1Gx94avI57I3fJ12X1iD3mN2a5 yL1Wx9lO5103w2dE15r2x1eJ3mJ3a0 UK3w$1w1S2C1kcs3m28g7cqrgx15h9563f50bl1j967mh5R1$10vaV115696008301omucb4j9pb47by19aA1 wZ2yeA11E2Q1mkkG12O2lM3nQ1b8F1426n7$2L4jP11B12rox1qlI1f QR3GF5R1Z22fgpa6U1y23u4ak1acG6Uc4k3kV1M2b4fbV1N2bH1rX7dB1N1N21b6r37b697 GW3QN786Q1I32iN1G2h5tF1L1U1hN1O1x1cl4tE1P1 WZ2ER83a664955 MW3IO7vK1dM1iM1okG1z129D1N2 YN3UH9W1I11gtA2eI10u5uW1C3F1O251T3X609et7db0P1R2ivU1O25qaeY1$3 QN3UN9aeg36d1rdbb65i2k AH4MM1836e36mG20q6c560sho9r2L19p4T2 yz3QokI2mS1jM1r$1lX2sd OZ3YU6ileA1jobB1 MZ3WU6eG1mpdD1lo GA4SJa0G1H1kD2V2iN2w2K3 Yy3Ay9N1V1tU2O1U1uR2 YX6AK4Z1eV2K1bccQ2K4V2al3H1 QB7IM47y1N2t8x1O2u YR6_P4P3Y490jN17R12nC4J3818c3a6W1 AN6II5F6G633nJ2cbk_144O5R5F1z3F4C47lM4H486Q1Y4 WI6_A5iy1$1_1fZ1_1$1 KF7Mz7ba3n5s802c5efr1f713B1blbP14J1oh86E1I40s yD7yY778396366 KD7_Z70j834S1931l SE7_Z75n302i5k8k871p UB7US739c12q711b QI7KK7c1gidadp wH7KM79j4fd8aU1ccQ1H14h5f329qlsbh U$6YT77007632c WB7WQ75747663a wA7wP7625607 QB7EU7b619c72c SA7MR7825617 IA7IS7d02A1c10t O$6WR70d1a24 CJ7CM7441d1a UN6YFb61882e5c72571d6b UN6yFb1kc42jb3 IU6wWb774b863e OL6QDb29420850 AK6wBb07400830 YK6WCb35478a1853 wK6YCb43153228 wE2WQ1f67B1d4bb5F1bd7B12fjH10r800ueoileaem4m3ueq0gis5k Ix1WF70oeagD1g6sf1L1t3hk5kd83c CO2SC86d1f7794V1Y1pC15i46G1lw1Z1 Ew2SQ879965M1tE13e8gQ1T1cpbj27 OY4USaeA19gjrd33V185oe2u SZ5WB4oui4G1pfE1rih99d7F1 EI6YA5z1_10ak_1fm6iI4R4N1P433B6_51eqQ2a737E1B15fD1E1fP129S5P566G1w3nopB2le SC7OZ76f630i5855 GE7Ox7cm5gdv0ba51c G$6YU7mgG2joF18vbf27ee6b3J1r93N1d7dE1915dihf653rona5e0E17a3_1ca8A1 SC7CX7439h963ga4598b8i _H7C_8o_1J2K3L1P3K2F3kO1 WB7Kxa26bc15cb Wy5IJc0dd68e0e670b Qy5ELc09426f39dg685c4k615b47 Ay5QMc0J1384y10p", "green": "OtGA2L22N4W71I4H551L7S7TcW461A8 SvK8N2F4b02uS6GcivL4z7 GmUM1C1D2MbQ1K1Q1I5C92mrW1Z5JanbDajP1v YA1EgkrU5OahA1V5Ra M9Ar_1I3Y1N3X1F3z1M3 y4WH1Q2C3V4K4I1P2ux4 OH1KX1lC1gY1T1y2D3R5F5j2R2u00x2v10D3Q42ocy4W8 ElYY1bw10w18iZ1E3F1bD2K1x1K3H1$1F1d3C1A165w2f3hK2y510x3W7Dd$3F4cy5 8SM1cy4R1U3P1fiL2T4Z2A1P2K1T1G1rO1y2sD1ue EaEE2ceaI3oz5O9zf5B1R9WgD1S2 GC1OO2M5U9V3M6L5R9W3N6 O7YY3U2H4cofu_1S3mF18ejE16aB2S3x2H5 OfEJ4I1C2V7UdH1F2W7Pd CjSE4P2N4P2S4O2M4S2P4 KtWS2A1S1S3N6rT1V3Q6 CrEZ3W2G5N3_5L3T4mfO3$5 AvMP45a75Z5N5hipD14r7rt47pA2v_6K9 _sGQ4F46bF2nd0niB1I5S3fm UB1CO4E1Y1AaJhtV1FaIh _v_Q4I1_1PgYsD1B2MgTs 2KP6gA1e9K4TcpvN4_c wA1WG6D2_3C3W5K2B4H3R5 ME1Ay6Z2D5dE1C1Q2z1B3tX1gpsO16fT2X4J2K4A1G2r0qO1snS2W4kF1i0oD1iuB1W1uw1W1B3 C4YH5667D1ivH1H2lG1dJ1l59ueQ1n_1G2Y1A1T1 MC1YA52mdecA2A17aqD2i0W1O1I6K1w1hH3h4bJ39h4pigW1H1dJ1ib8L15ntc3hmr5lH1f5el6 EG1YL5rB2jD3D1A1kW27E1mI3w1v7x1 J4IN8fQ1M8w8aR1F8X8 Iayz8iz1hjpy1vF1A1N4oC17Q1k2iL1T1X1y1P3kE1iN1Y1G1H2O6vY15C1em1mvF1 YL1UP94kz3_efuX1C1M3RbG2X5dp87mq bYM9ti2sY1Q2qA2S1D1C7V81dD1h7jeF1u54fbb5t0H27_2H1K24mpihN1h0ds0y1D17ho4K1rn0C1n1do3y1hA1jddl2hnr MkQVaH1d5eoA1qM2c01gdaG2I2evhH14Z1bB1Z1J1 wnCDafF1L1M11iw1Y5I1D1arN1P4 SiUR9sS23krA1eK1c9cm854nmvdR1i93C1E1A3C1vfx2p8pP26ls51gg81qgumlhB2F3dD1I12a wrQ$92oumK2U73w1B1G1n8h9dR1hn4pobC1x1B1F20L1pj5T275D3G3B1R3o5iB1_2Z28E1z1O11sjo0I1pC1e8apmbiB1E2F28mbU196 wmK_9H1x32dgb8F1eG1ane12M1jw1shgcC1tjldT1g72dlN269E2S3gW1H4_3 wD1KCadcbI15I1cI1pI24K1mk8qL1M4rq$1$60N1X2$8cT1uB2S1z264cY1D2W3dC11suE22M1Y1E68K2kogdiR1lD2f31dcH2856o81aL1R1X42J181C1w24K1g0G1F1ggb2 y4Ex91pK3x4E1N2E1tS1V2S2x10w1x1I1X7Sa UpQKaL2y10B1p$1$1J11ukm8qd4bK3gW1C19inckef8L1ukad3hI1l3H17d A7CUbjr5tvtaN183kO1C1P1i5krCaD2$9K1roJ2gL4Q28Y3E1C6M173z1h04L2t5nP1I25E3r yX1UF3RbTkC7LcA2K3k0aimD1G3Q5A3X4y4UbFayh QV1OI1UiMB1J4Q7zeLD167B1P2Q1X2 GJ2EJ2y5Dax4_bvZ1 CQ1ImD11tP19B2ktmA1gvoukH1lL2m52S2cC1J1w11gib6mjG1 wy1C_3Q2B4K3Z3_8F6G2nX9LnTeApO7Gd OY1UG3E1_1IaBitF2NaKi GK2KL2F5A9vF2C5Z8E1A2 GT1EK4lY1_1E3D1A3R1z1vmN2$2nF2w2X4w2K3 UQ1CR4N2F3hL1H2W4S3y3W1$3 KL1AQ4D3x3S1B3K1pU4$7Y1G37e8iF4y66uD2Y3 WI1GO3d8pw1E5A9G1F2B5x8 YT1AI3gfeifw1qD1csL2A4J3V58baaW1_2I1R1iH1 OQ1W$2C5M9e3mH1F5R9vS1 yO1KC3Y2Z4M5W9$3_6N3H6gphtoL1L1N2 Cx1GQ3ho3E1C1G1cM1pA15qi0q$1y1G4sG1g1mphP14fnhC1B18tX1H3b84rT2X4hO4 MZ1SK3gq7A2ry1hb5c4G1pgsq3A1i3dT1ivew1s8M1I25uluaC1B1G1F4V7Y3F6 A$1Iw3P1T2p51F1dF1jugM1lS12M1d41cM1I2eeI2H3 yP1Yw34iA1o1G1K1O2C1i7oguc8gF1w1gfZ2$3F7x1I3 wW1MA4d70M1bS11pj32f53jkjw1shuG14B14qg81Q1D1Y1ko6C2oB1E2F5F2$3 SA2wC3g9K1T2874qajckdk6ucd0m920y1a3qspU17U3K1A3b5D1N22T1nI14oW1Y2gS1ux2f3lJ1M1dgp5Z1pV2cx1T1P2nZ1jbF2Y30e MA2WW35Q1i0W1z1W3$2w4J3U2B1J9Bm7ceS1lA2rG1G2I3qG2dU1c6G1E3dU16gqT1gf2aZ1M3fI2a2E1B10L1A1R1um6nkl0ja22E1dA2ee8d8A1qiH11tL10E1B2M1D4K5j2J2S2 y_1IR3oM1A1qQ1$1_1H1kF1F2B4d8fH1l6tI3H1I25qcq Gy1WF30mA1U1w1T33dK1X32v8G1890vkt3H1B5w8 GJ2Sw3qm0mhC1D189Y1H2O2qK1ji97dD1b33sdb7toh35O1z1eX1G1nqL1m7 EH2YB4eoml7pebeH1U1F1ma2E19uqe2kvmdhh87e8K2h49pL1A1dq0C19m5x1D1z1U1B2 UJ2MY30X2L2O1L1S2H2G2X1C1N1_2X1O27E10qiC1I1x1e0E1J16li5H1M2F2I22qg84qlpb80E3K1rC1D2Q1X1O1X4i3sviteX1G1n_1Z3 y_1OZ2V5Daz6IcU5CaA7Fc QP2IZ2sjhB3T1C1hooW49aD3$3Q3D6Y3S5pW1R1I19P1 KO1Iz4D1gbh6bP4V5sB2y2Q3kF1ckF1S2I2W2 AT1YK5jplQiQ3QpS2EogfR2TpL3LnmZh EZ1GZ4o1sw2aG37Q16E13G5$2O5f_1lA70C2eM2bM1b6X2R80dW1h6L1bZ2b51kB1o2F48x18bW3E2ofcD40R3gZ3bZ10N3 EZ1UX4agc9aH1eeifhrjclht6L1pF1_9A2N3M1V3 Oz1MD566bE5tK7cS27eF2P2f59c1U2aG4J1Q3rx4dH1eL4chsC1eN1nF1cz2O2R38H1_1H3 YV1I$4qbI2L50E3d3bQ12G1uE1fM85aX1lZ1R1A1P7 IA2OX4hA2p06C2H1Y5R1Y3vM1aV5fT4pJ3cB2Y27O2G1e5 KT1YF5U1xdy1x8hfJ1y4L1I9rW8ke AZ1YY6U1jmu8Y2djr85dd0cu7cnL16M1gK16cqloe3uX13ftbD24F2pD16dqA1 C_1YF7g41D2oP12P284oy3cQ6B1S2hR2B2q7bcn0B1kZ2a9 Sz1AC8A2D38rE2Z2mi3K1F4A6723vb3 OC2OZbu2I1VL1v3F1YL1 YH2Gw92mg5S1CcN7C2X1$bC7T2 SP2MX94le2gsG2KaH1Q6r07E1L1p5Q1D5x13D1U7$2V1xc EN2UAaiM4X3Q1tT7ob3vA1I12iI1n2e766sa5so _F2UU9aE5S4X1kn1F2N5d _M2Qz85E5em7mK1w1ktcN1D1N11vkB1X1N2 CC2GAcin8O23U27eR2ebb0H3ad0pjfw26 yO1KWbva3cj3kF16D1dF1F1x1h42cV1n4uE2q4i7oP1p7aoo0kA19iA3A1o0A1e35J1q3cf7p7mh14ji00d MY2W6I9V5oQ4E1E2M1C5uK50E4fA3ngN1x2r3z3S6L2U4Z4D9C1B2E2U3U14M1pG1B3eL3nP2F2Z1L2lN2C1dT3G2P1hL3 AU2GV1f40uQ6Mb697$1z5Da YZ2KD2C1w1J7_dL1x1w3H8uT3K2X2io QS3G8I4G4uY2eU3rsZ4Bb2b yV3sQ1B1G1ojW3t43ose7U57d1H1900C1B1D1sh3jvA18jfr7E1L2B2nD29A1b9bH1b45piv3b4fU3G11fO1L1 wG3UI1cw1bY1jol4ttbZ1cX1uro6io _G3WW1hU1rI9D1r9J1aZ2ax6y1cck QH3YD2ajE2G2O3C19U1P3jH2B36h WO3P47y1cQ1eoY1cirK3C1s53J1z6F3 wI3L4w2B3C13gohU1ea6u1W2bY1D1W17M1ldhJ1cB1m3gvqB31f5jj1$1_1rV1 MN3IM32G1BmG10F1AmF1 GD3KQ4sP1dP16F671J2E46_1Y1G3 WL3UJ37m6ky27oJ1z1N30C1d96vjH14Q1lI1b48E11G1 YO3Ky3hU10C170H2R1B1B1lH1K2fmiI11iG1 OK3Yy3a7pL1G1pQ10K1sE1jbjh8fj760pqqa7rH1Z1tbD1H1o9hl3vR1v4fG3qU16_1Y2G1 ER3MB48b3jg18a0ouK1S1smvboa0oP1L2B2N1nd4998nU1E1afoO1S1E1c74h94dpv60D1F1t2rF1nbA1jdb8atd5divd1r73py22Q1a36eM2U1 EH3CV31l88dpN1bV12J1s2S32ike0Y1Q4s5z1pT1ez2 _S3Yw5F2P3H4L4w3y6M2W18l _E3Cz7alU1I2$1W4T1H2W1$3 _C3yy9H1X1X2YdG1osx3fb8ti8oP3jdsT3k7 E_2MNbP1c3J1d47D4i3fT4K11uY9 wB3MQc7a4kF1x1V14hM5y4O1J1$5 QU4AG163uC4gO20_1jM2B2M15dmfcr5T1gvlD4iX15d6J1 AZ3qc9aeW1M4cG2P1K28eH1Q13hrA15H4aH2ca9J1ix3 Wx3B6Y1D21loJ1S1L1uOeD1Q1la1cZ1uZ2$61rE4D31fz1C1b73L1 WI4Ehc66vX2Zeb06vl$3d10L2N1X7lH1atfh5sO1U7a31O1K4Yn OF4IdI1L24nH1T6bsB1uK1_7 UI4YU63P1H1P14lbbtG17o4k7s72A1_1crkG14qM1X1eC1pM10kqU1cbgZ13F1rB2j0 QF4Uw6g5A2_27I1qeW1Q31oH1pB1R1h36R1rt9ef30jgbv79pkL13h I$3SMaZ3$3B1I3w3A4C1H3 Ww5SdB1x3T1K1tz2$4M4A4w7S2N33N1G2Z1 EE5UX3A2U5V1K2D2x5w1B2 yF6YP5y8P7J1Fex1T3J3R1P8Y8K2K6w3wb AD6EP6P3C3A2E7mX1kJ3gL49n yC6KD6B2y1A1W3sW4876ma34D33J3hD4 yC6Ow49M6P1Q1X1B4S3Z3 SL5SZ62_57if8B3Z28x3A1J1Q2I1 yH5SY67C3noR2D23X1C1X1obM1sgK1 yI5AZ6edG2C14y57ab8pZ1peL1J12L28j3bcl5S1coi8kl0F1B1v wU6KS13Y1B1E1x1S17D1he6E1J2S15tja6uJ2A1bT1_5J3I3D34a MS6wQ4z3W6R1L42H28bU4V3iA4 QS6Ux55C1p67F2ap3B16ne6afK2lecE1tg8cs1E1jjdij27q8m9a4C1J1kl20H1u97L1n9bA1rdbG12kag8jca yV6SW983K2G24hc40lB2N2kiC8_7f5bs2miia2oD1gs0iegihA2_1fS1M1K10gxeRe Cw5yGd_1Z63tt77cD2Q7ailO1g6i$1ia8b MmYC4j8X1y3U3Q6duH1D2dogM1P1A2O5S9Y5JaJ9Zc I7wC7ql6pjT3ufmC45qvqeE263kG2C1lq2my2Z1E1eM2S3mqN1z4N8eJ1F2Zb5jbej$1B1P4ihlP2L1V2affJ1V1A5iuj_1t4bC1_1O29A1ioC2w9I1kiy2 y9IV8O1Z3brA1J3A23A1o1w38a0qcgD3M8nA3rA1X3H4G1X3a2cvk5cJ1 WW1UPaeK2T9M99D1L1G12cz2I45i4gZ2_2V2D7aJ8E2H6M2L2M2ry55A2l_1U2w15gA3 UowYaD1U4z7Z6w2Lg7L2mw1kI51K8I5S5 OA1Qza4H1nP1N1X11fP1N13B2P3Q3L1G5K7_6gnqL6 OoUyb2U4m3iP4mhcN2$1c0U2b0 WL1WM3gqenS3I6x3W6H5L9S2R4K1K2oL1 UM1KFaA22eom9E1L6Q190V3J34J1N2nhx1Ac9mw12 wP2CJcL1vjC43U2K1eQ3j_41T7N5 Ez3CR5N4V9z2$9tpH1qnnV5S5J3E5T2_5y4K4W3A4G3A4_1I3y2P4M5H7 wO3QM5559C166R1K4P2B26lR1L19mH1H1E3Z6U2$3O1B1qsK1K3$1A7 Q_3KQ7lkV192D1N1F3diB1H2inhJ1D7Maw3Y55euI1A2D2I7F30lN1B4 AS4E$7DbXo4d_5I37_4W3w1K2cI19nAgjchH1 KJ4O_9X4ye2uy2y3apE1W1E1dE1w13_266Q4w1oD1Y4y4sT3a0Q1I3iN1N2R5VcRn1a WK4OI9E1W1oF21lN3x19g7O1y1U1af Mw3QEci32Q2dmJ4D1E4z1 ML4yVbe21Y1v52V1i2 W_3OwbeU1rS1p14F3E12 CK4yEd76bD2W1F1cw2D1q3j54 UX5wy2I1oR4C4V5C1d78T573E1P5Y4Q3S3E2 yI5KF5gK15aJ5z2y2x3E2G5 OH5UW8e2hG4ltqJ3 Az5QZ92uI1eFdR2D3C2z1I40lA1J29dpW1bhY1N3U3L2QdW21av7b8 YW5KBbJ1O1bD3C3X31K39c4cD1M1 UC6EFb842bA1s7G1W7C5q$1L1$4P2F209H4D21K1932bB1h6vX8D4v798dy36cG1aG8_5c6aB1 wS5wK90Y1A1c2R2B1e QS5wKaqqB1K2N1Z2iR1mo18g8 SK7MP47jJgH6N5w1D2I1iW3e5acE5z2A30M7E31eS2q0M1i8W1rY1idW3828doD6 UD7KB64mdw2J4B4x5R4vz17B4U19E1cw9Q7pS3 WW6Mx68F1O1C1dY1535ih98N1h9 AS6IB7979G1lhjI2cctE3b9nY2O3G22d84O1x5dV26D1J1n QX6GG8C1$5z1B1F1G6y1G169 EC7yY8hveV1A1A1rW1 wJ7MHad2L3B4A1P2w3S4v_1 WL6U_8l_1B1rgZ1fdiH1mC1ahksdC1 A_4M_b2uC11hX2da3S1 KO5AYb_1N18H15H1R5Pcr4D1C1dq2E1U2S567eC15aG2C6mi Qx5SMcjWfG7Q2vz1cX1S1H1jL44V97Z3X6a5i6Y3 KH6GVbK2P49hx2w5$2_46ge8oJ1Q2D5 ST6GXb5P1arM2F1gQ3L2I1b97r MR6SwcB1T271$6CaoC2A1hU6J81h WW6ATcK2P3F1X2N2K3K1_2 CE2UD7F1eB1T1t44guimqF1K10uE2w6iC1c2hI1737T1fN1d1P1B4b2L1Q26J43x1L2V6vR1dz40R1$1Babpj0fF33$130rL6nF1neR1K3rB6oJhU9Gd4W6aG5G1G9U2EdQ2K9 OT3EG4M1L2ebuF23P1D165uL1lB2D1tT1z4J3Z2D1pnR6thhx14vnJ15N28iH2hH20z1J3iPaW3V7S5H3W3z6Eb7bT1w3F1O3H1w5L1W9rM9G5M7I4U56$5aD5S2JfsV2C1R2E4B8Q3z5I3N4S1R1w2H2M1rK4X1w2nU29Q44M4oC4M1Y2S1I4Q3y2M3 Cw2_$8y18qS19qhD1p5R2Y4S5Q8E3F6Y1Z3K1G2K1O3nK2uW1U2X5E2R6rB11h94H2R21bR4B5zfPkN3T5z3Z7hN1x3W5D1mH2C38kX1C2iU1jS3mW338469oU2S318W3w4gD1O1Y1kR1I2I39kko8hY2_35kM2G35iS1O28p44O1P2sT2e1_2G4 Ez3SQ50kL5E7P2I4b897T1$2F3$3V3$3X4x33dS1Z3C1D2G1D2E2$2_1D2Y3N3a02ic6spc0uqkW2O1Y4I2w5C3_5 WY3IY7$1E2tH16dP2N3J1D20fE7BaiK1hoC1I2ehG1_2881E1W1amj4m8aE1M31cb8x6_2 A_3IVaY2P85pG1T39p1L1jjav68sV2556nmmmjg2Q1X4bb3ghh6fjjatggG1V3N5F52f753gX5H32f931gN3D1R2B23b72P5T4F1F17nf1jn5vdhj6D2S6T2Y56iN3S6jQ1M1O2M4V7q$1S3y6C1nsw1jK1K3Q6uB1I2O5rukw1X1I3dcP1Y2qE1S3R6oC1kN1oq4bgsuE3A2O4mN1cD1W1_1pU20eE2A3 YH4KDaF3Aa2uY1S2E1K1apE1W1E1dE1w12M15S166Q4w1oD1Q3w3I1C1sT3a0Q1I3iN1N2R5VcRnT1G5 AS4E$7iI1kbo$fH1aJ2bV3Z18z4z5H33eEbYo KP5GX2D1Q5847G20O3e8W5B1C3P2Q1R1Z4x2X4P3", "bld": "AjH3O1S2fukA1A1x1F2Z3da2s _jwkA2S3cjailK1V2Z4I1D2akrQ1 AF1YF1z1R3R2I43o9iI1C247is6bcguZ1bhrS1fn36rP1I2z3K1M25aaiiH1 GcElS1w2ahjD18dequP1lH19g59bk4c5a487gpR19i AqYh4a3cjC19jepx1L3tU1blK1H2M2M4 wD1EeB2X3kF1E2w3lE1 Mcy4T3M6hvU3L6iA1 QesfvC1Z14cO2N4ehoI1rO1j1Z2w4 CjWH15c8g27cA18dkG17e8e256a36ck696e9I1lK1blkvrR136jD16blJ1369hlI1bnK1$1a0gs MA1tF1G26I1bM1Y1w2huz1R3cR15P1Q1X2eq UH1C7h9aR1dnhA3Y1C1uU1ivH1D23jd15o UA1z2eoA1Z1W1A3vw1ckM1N2N2N4N1Q2 I6QP1fueS17c9irpfsQ2O4A2P3P2N4 SsyF1I1M27graR119fM1N2488d AbOJ1_1O3D1_1z1N3E1z1 y9Sx1hA1Q1W2C2R3P1V2huA1Y1tW1vZ1 O2wW1iF2qmbQ16agtacE1I27gC2Y3jC1tX1bmnL1enftdmlH1cnftdonL189 GrUC3tT1tW1rT1Y1B3uU1bmcocliA1dmiscjgubmeqelsS1X1A3tT1uT1pP1pW1pR1oJ161 wH1UV2jD1ah7f38V1T25d25pP1497d9ijD1gpam4735mH14845bjelmI1bm35tU18g4548ivgshA18e236agtkE1hA1cqiveqhu68588eK1R2mK1bmbl5a68lE13758cmdq IpMS3hA1mI1x2E55bF1A2oM1O1N2gskF1dpG1D2468f15C1x1J1J2 C4yy2C1_1K4L70B1T2F5Z2A5S1_20K1P1O2 B1QA38eajS4C89i6aH2_3Z1H3grai7gI1G2A2P3N4Z7z1O3I1E28faifqZ1D3E2Z3 B1IZ3S1y2jucmuT1H2B4vW1eqiJ1 A4KP3E2Y338gunK148D2w357lI1tV1aj8c36eskv26C2T337gr7b47$1R3389ffs3778X1C34gfqmC1bmtX1oJ13729Y1B38968oL1gs45 WlwL4dqbvfqC1_19g$2N5G1$1M2M4 w5YA4epbj69jB1O1R2M3A6N1S2nJ15adnboesafA1w1E2Z3B4H7D2w3sQ19ggs MeQS3sO1ephv8fE1E2fsckA1x1bl3avV18dageplH1Z1G3 yjCV3jI16cgjg02udI1tC1d92par5blK1J1D2w1F3G1E2 AaWK4F1E29fE1$16aelW1C3do8cD1y148X1C337B1y17bdmV1B3en59G1$18gH1I2Q1W2G1B24aw1F335G1$1R1X2 W2MI4iC17cckfsbjelL1P2bmblgpcm6dgs_1L345dr69drepes9kI1M2cjamdqbj58ftB2S3 IjAR47fB1_1$1P3C1z17dB1_1489iG2w3ah6cC1z1 weEJ47bB1y1z1N3C1z17fD1_16a9gG2y3ah48C1z1 OeMC3ao85cigf35A1X146474f9l691f537pdb7nl337T1Y20maceF1ijat24673dS1_2J1O2565l739i ScWz32uaqeii6g3ehan4t1t9pdhh5f4di9o3u OeMF3B2O3hhrR13B3i12y2oM1S1X2P1V2chw1S3 Ce_x2L1K2blM1J2P1T2584858159g0e522W17c751R18j57uX16ecjC1O267gA1bm8c Q7E$2rW1W1G3E166g7et59f36D2Z3K1J2ak EqUN6R1S29hchlF1rS1dnsR1jF1bk9fQ1x2iC19k7dlE1mG1eneqdokG1mD17fahkC1 SnAO59jhI1V1B3mt9jC2T323cigF1W1C3lucksR1H2$3pQ17fJ2A4aepO1G2A4sR1 El_U4O3A6R1Y2hv38dndogq6dsQ1G2x3B4D7B2Y3A1w17geqcnbn6bnJ1O1R2 UG1AA6akdqmG1epckH1G2bj8djF19e9jI1F2 pIw4D1y1akoH1E2_3iI1lG18kC1X1H3P6 E9AV5F3y5H1D2cjsQ1S2T4rN1ajG1C2 yfKw59henz1P3x1O32S2b03Z2K2H4S2S4nK1 Y1O_5pE2O1S18h35iP1D1P152 O6Yw5R1w2R2z2Q1T2B1B2dqeq47akR1Y2K3y3w1F39j _kQ$4bobj5chvF2w3iC15cakdoblcjJ1N2bkblenck69iuC2R347fv6bbjencmbkK1M2chak _6MK5mK1B1I1mC1clC1_19inF1fumI1bivx1enz1P3fqpN18fgsmH1fv8bsQ1dmsU1qZ1 G1UO5ajE3I5bmnH1jE1djmH1dljI1bjmH1bjlG19hmF1fp EE1Yz5sW1irhB138pD1L1M2cI1el3745G1G2ah9h695738rN1el GaIZ45bE1z137Y1$248C1z18eclU1_2bm8eD1_1bhI1D2P1V2F1C235T1_246J1E2S1w2G1D2agD1A25bdoV1D3cl W7KR5kA1Y1H3Y1E3alB2P3B1C29hvw1 YD1KS68dlvU1x2iG1cjrT1H2A4qQ15cS2S4A1X1bljK1F2z3 ErQD6pN1I2z3sS1bkhH1V1_2oA19gE2w3ajiK1W1$2lvajuU1H2y3pL17gJ2B48d wmMV5cjsS1H2_3nN19g7dF3Z58dpN1G2z3sU19ihF1V1_2mA19iG3W566ahgI1W1$2lt _fwG5dmcm9ikuV1y2fF19iD2Z3ahjvU1Z2iG1chaielfrbmnN1J2A4qO17eK2E48doO1K2z3nL1cjfr w6_$4C2U3cjgI1W1$2ltelsS1J2C4pN17eJ2B4ahpL1I2B4uU19khH1V1A3kubm26 y3Mw48fiI1W1z2jvcluU1J2C4pP17gJ2D48dpP1I2z3uW1bkfD1T1y2kqbiE2Y3 $1EQ4E1A2cleG1W1x2lvafbhgpeqbmqO1H2y3pP19gJ2F48bnL1K2$3mK1cjgubmbjbkdF1V1w2mA1bkA1w1 k_D69uvD125rv25rB14bnt8lsC116qu36w1I2 CgUP6bl9kU1y21cA1Y14748456c435b27J1J2oL1jF1bi48bojB1 CgUP6blE4H7486b8cJ4W7 x1Cw7eg18i83866478a1846478aB1G3jt1699275516337iM1O1478acF1464933at442913at556f$1F25m Ct_w6jB1qD146496a45G2E47g46lG1ftiB1jD17g4e7ctR1cjcqcn3538fr29lI1 KnQz6qP1agfsmG1e2K1J2eeT1w2n3D1z1 AtGO70nb5vV13n907c9lbigonM1w1E3oJ1ck8dbl69 ItQX79S2c405A1i07k81ez1l7A2Q2s05A18atae1hqP1tT1lK1591cb38$19b18z1l UjIW6353kA3G5450aa3sR19jlG14636J2B4clfpbk3736 _G1CO8gS1898o8715y2$25h65fR1R3Y3 UI1OI8fi6m7fZ1y1hT1O2P2asfigd6g QD1yE8O1O4B3E3pP256cG1R1U1bD156iC2T4_4nH243jZ1W9z9 yhC_7B1Q21m500E7c10R1600x2610h5J2sJ22957 IjwW8hE2C1u8mC1B4d9bO1vp yM1IX6b22mx2C5L2D4oB19htU1y2C5I3V51B1 ytCY6uV1358bA1C267eo5asQ1458e7c15tW19hsR1nF1lG1dnmJ1lD1rS19f Y2QZ6qW3ibeE2e7tP4545p921dhc L2Cw9V1W2S1K465gI13i2o8ac0edG3V62rbnj8x1_3z1D5 wawEa4aab0b7jef9nbg5d0h59505e6mlo5dbe8o67gI1568oa939mp YF1OEanQ2P1L1oP2Q1M1 QB1MWavD1hQ19biR1tvjw1aa3aQ2Y28hH1L16fmqav C6YA97Y5G142tv32f402T1s41y1c04V3h10E1l12z1b1 AF1yIckskpo1eaesif8a473bgh9n25bl6bdf3cbb985g6816j3tarK1 EI1Mxc0Y1g00U2r00P2L100z1Y12 OG1ywc2N5Y120g620ia03K4F21 C4W$chS2X3N2gR2w3O2 EtKIbnQ2B3z2aL166avA3U2 EnUIc1D1R2a0eB140B2$184Y2S5l MB1SYb61mL21dV1L29oM1_1dS1X1v6rjb5U12aS2K1 yF1IIbC1fI2E3fO1Z2B4 UB1S$cX1F13oM1u7_234T1B13oG2O1eV4 WgMYb3L2T182kP162ia12I1Y2d IG1IGdeT4M1e2ds8dA5J2j UgK$cL1y5ldcV1lf9Y1nfK1x5ogdy1keez1og _Z1UO1qL17bfuN3D6iv7fpQ1y3_6 WN2YO1_3G7F1E29fuT1L3D6vW19fK1H2 AM1IF1_1Q3fq46jE1dnmF1H1L2tS19jK1H2 IF2_z1vY16gG3Y5C1V18eH1G2z3B7I1H28c YJ2QrjC1A1O1dqnH19icm34M1K242qN148ivdl8bD1$19g6abk9hcnbl YG2bbg4sC1ecI17C1lk7K1988ueb6H1staX1bV1nf389p55 wQ1YuI3W5hA1J2D4botV1uT1 wL1IS1x1G3bt38hB134hL1clai38C1W1K1H2vx17e9hen6a43Q1w2 OY1I9pM1nP138245aqO1T1w2C2Y3K1J2agM1L2N2L4 SZ1w4boV2V4qP1akdoeqep8eboU1y2 WI1N3G11Y1G31C2d11L1R1z2p20r YM1K2G11G1C20W3jA13598bnafagaj2D3rP1v01n CY1N1qO1ahw1E3rS1J1H26bJ1J2cj _$1yP19sA1w1tU1drbkw1G3cjnD1oL18g69qO138akmF1J1L269bn6b7d9qF1B23613 SR2_x2P1E1a60mh69e7b2jP1G11I3b32L3L1H28pO1M2S1D15p438qQ1D148a74g AP1EN53_2J191c71552J1f10ji22H1c21_1m22V1m2 US1Ww4bQ3h38N2533n5d2bbbhG19d0dmJ161G1C1aE1 EH2UN6sS10C15klC14edkb19h4dpL11F1cvipc5e8 KH2Ax5K3X5V1$2H3Y5U1A3 SC2Q_5iJ1X5x7hK1Y5y7 IQ1KY4aj7b3apH1boiulO1hrpY1aigtcm6946I1H2 IL1YR4_1S2B1U2z1R2C1T2 GO1y_4bfiD1pD107oV1ismP1aerw1689oE2O2jC2E168$1912fo69U2621o5018b10bn919d199kB23cV1D2fK1 QD2UF66f9d5P3M7U9B1U2$1R23aF1P14bZ2V3 IR1YE6ve4mT3Y1O1_3G1O2G1f9T14dQ1hjD6 _O1QH7C2N3eu7e7dP1Q2U2_4cj8gfq7d36x2L5 CT1SA7I2lmM7l81lc3jB6X1inK16e7edtC1x1 GW1EG88d8iqN1$2F5nO18g7efrE1H2c8A3I56ivY1b6bn MQ1QS7dq6ecjU2_4B1w1B3B12t933G1a40aI3E1M1R2Z2H5387d wP1AR7fs7dclV2x4P1S28e7cdpA2N3_2K5588e A$1_Z7eA1z1U2z2z6C2N2cu7c7jP1_1Q2_5Q1Z19jab GP1Cz8445c99558fjpy1J4uK1x1K4 MM1yK8jE18ery1aq62epaegt8eer7n343547pP1 MX1Gw6I1O6c115K1p7nF1m7H1e71jf45ve93hd45B1e73jd23b713a2e ET1yO77dgp8ebkU2_4C1Z1hR5d41jo5mQ6N1O2x2N545 GR1GF9iR2Y1P5M2x4S1Q269E1y19kagx3E7gI1J1_1f1D2X17n wG2CV8cehS1ci6116oA1ny14418os16ci38B1V13c332373bpqV1575c3949bddA1bfK1F3 yz1yP9b$aL142_1p4aA8o12A1M13 _H2II9P110s701a0K1801qS120bu60nB110aD100h401N1E120cC120lt20f yQ2MK9R1A4T1$134aa9sM3C4eB1gkfK1O2w26j8aK1N3P2B3eB1T2F3 SP2yS95ica1eZ3L38tO3A3 wS1wW9hw1T2N28t44uZ253eL1W1U1fY14416ombM1 SX1QA9C1A23646D1y11358B1z1M1N2 IR1MY94W2Z1a5$28107A1308e10a61 EJ2MI91Y2A1208k22T2f00bD13 IP1CO925a8D2Q7ljeZ124C1X3336j44aF1ca MV1UQ9A2506e00u643L3300gd6J225k6638gg Cw1yJ95T4I272_1p44W2N14 Cw1yJ9O136K5o12I1H265R6 Cw1yJ94S3L3a3D4S150kw15 EY1QI9D260uf24G4G135X4Q130b Qz1O_b2B1T2rJ335c1U1w4gK1d QY1YKcaT5A161um21ec21of11U1a21k9118791K1F17 GB2MZb0sXal0rYam CX1GJcu84H3H171u712c601S1f25aa3m6 Ay1YBcblbkb73859369dh00A1923aca3e2ky15af1nel WR1KGd7G2x1f8L2y1m MN1SVc1E1F3106r00L1E44 KK1OKcw2i4T2Z2l3Y2 EN1WGcL3x4gD1M3_4fC1 K_1KBco8ae5_2H10cT3 YL2CRc1a4g315Q1e64D13127oa1c88812bA1a6f1l53B2pba Yy1_Hd36371f63nX207ol8k41eW10a43o_2344cF1u08b02D1c1dP1 yD2YZc4S3a61iici22B19bcD3T15 Cy1KJc2bc24N1m0pO7pC4nhgF264iP330cP3b3 WP1Y$bL1D2hC1ku0c404M1e32ms31R1700f _L1KHb4O1kb4A1584A1d64mE1d4C1R1ilH5g3 OK2YEd2T3B253A3i22J2C123A3i0 yS1UEd7W3o4eL6g5fS7X1baR4g4 EJ3Iy1h20cl22O1o12ac18fk6A1lhL1J18 Sy2L3k986cW28i7iz1E1d7bP1d83caI13cF2M1b5dF26517gb644s18aoA1j4f7D14bsf27i9aa4K1a6A1h670d5N157545p EK3_9ngE1C643kE3ofjD363hT254lJ3 _X2yspM1jH15c9fadnH1qJ1S1A3 _W2Sufu263833hG1R1R2mD16esD1C1_1 MX2CH148F1S2cmmL1C1V2fp7g08T2Z49kU2w4 Mz2GV2dlclqO1nK146fs35lG1pN1cneoahdlepgocl OE3UC35b34lH15alH1clhD17c35jA1467emG1ermI15amK1368eoL1 GF3OB3B2Q38ecluU1jC14636A1w1C1X126M1X25945rR11637jC1rP1ep5d UL3ST22uV12z1W3lB1oL16aqR10tQ21 KR3AW33ud30G1q22hi61eg61q513E1B194J1l77G2h5eV3f54rO1e _T3Y$2cobk39pM168bk37pO1489k35pO1469kdn36H1H2grck5asQ1K3$54469 y$2CW2kC125I1Q2K1J2z1N3J1M2 QE3QZ2J1M2O1C238iA1O1D2$1R3 C_2UF3C1x16a23uK17ecg14mG1238mbk7b7gjD18f7fbm8g7gN1X2 OU3KP3G1Y238akM1Z1v$3X1G2 O_2WM4z1K3D2z3_1J3E2_3 Yy2O_2E2U3tY1D2R3uZ1 Sz2ON2K2G4D1_1J2F4E1z1 wH3yI40G17008h00oq4v20qb00q1rd01s0r900pn2o50ne10P12qe00F22M1I14 UM3Ex4d01f49I4B46iR2S24eR1S117 EE3Gy4B1y1z2J5C1x1_2K5 GW2Gx4_2B5U1A3x2C5bl45tV138bl CW2O$5X2w4w1I3Y2Z4Z1H3 ME3SF5kI1_4N8lH1x4O8 UF3SF8z1S4S1E28jJ1R1S1R3G2A3hE1cgoX1x2Z3 WO3GO8suP1G4rv7mK1O1_1R5H1N17o Q$2ET7ae38ae61I3V79f36577i8aX2G69d7i SR2WE7K2X5a63d2fg04m9maabs6a7m7bP1U3l69f KU3WV8K1u3i627I1N1n5sphaP1og8L1 EO3MR7qmoG14dlv2f2eA1Q1vS20gacK1L3D1R2525e17jlhC1 EX3Gw8gH2536t718J150429K1883kR1B1a$16373bG233bY1647A1S1C14fa8 KU3yH7pZ18biG1cf507r0hcdgC1sx1aenQ18kJ1_159 KB3Yya6P2624J1$3N13E1k61a8207O2s7Q3gc4v YZ2Q_aP210N2O222O2 EG3GDaaF1G3U4fC1bd6bJ2L33abj KL3M$ai20K2b808300f301e301Q3913C290c$6o41N1 Sw2_V9nf2bz1J15uB1ldC2533e649Q1z1D15oY4M39M1kc8L1c67I1921ea63gkeU1T7jr _U2Iy9M2U19O15106nf27d718vvaN1 GX3MOaF2T3jG1B1x1387b6b13oN16c47M3W59i ET3GLa77duU2y4ivP2R4 UK3Uz9L1Q2oI1ep7hA1X1oI1hI1go432b5bmt1d5b58hv6b7dhm9b WH3UTakg3c643g645U1841cua6w15aL1f8$1n0iT2d92n C$2QQ9bf8dfnW2Z5qI1x2I6 MY2CIcbS19705H2L1aP1U2Y1 Gy2yAc0sR530rm3y3605e006i2 EV3SRc4mA1jcy1B1k4ipg3f631d527D1813b543jsh Qz2CWchI3T1pL1S8B1hA2ZbU2M1 SD3yPc8E174S1I7mb6C1hc4ifaF2z9mf MJ3SQb2sa12Q1720g2c812O1722sC2907a1bH5p28E2h2571x1v6 UL3UJdA1e670v570H26239L1bdnjG11gac0k6a62aja207i25S17q wX3QLb0O2F361T2i00y1G100bA100R1g2 MD3_xcfa4g54M1A6A1lP1P698 wx2yNcf96vF1pe$1E3I2b_1T1D1465s KH3EDdiE1ivsO1nE19fiB135nM1nF11657ds359e3md56p33aT1kggF1ai CF3KSb07C2l7F2N1g0mb43p8rE2niG7V1k9f0dO1d7B2x1k1bb42cta2s9409T1ehT4O2p6i862o945hx1iaw2K1d2jM17 AN3yHbm16E1feD3I15H1830R1402Q1a904C2r3v404o A_2ADdlbqB5ma27nbk$3E3S1L1M9P2F1 _T4UT1d6S1Ibc51f411l523D1411l523B1431l523B1411l523D1411l325D1411l521B1 wM4yX1c7auU2M9bc3f329V1345l437t347l639v345l439v345j437v545j639B1 Mw3UuA3O6dk$2L6el IH4Ez1fc3hfcdY141iU2e96ormvR3kP267qh28a728548s YZ4W5H1A1qA1hQ12858D1N4I1D128416ka9aC1 SX4WL4licQ143A2A8G1P17lnE17l43X1T6345nc75h M$4WZ3B3F7J2I26mA2D2Y1E4E1W2d8F1Q1355636cqA2T25b65 y_4SP28oL5y45j8517O2D2158524O2F2 AM4WK2lx2c75jliA1A4id6oy1L1hL2dagW1H1u513fb8 EL4EN2my2N1C1lx2O1B1 SB4yI3E2U9daD2T9e9 ET4IL2jg4gc7aQ1to2a34C1U4624culcQ1b84gkdhR2D1qB1R4E1njR2 QS4UL2F2U10etm77D2S14kc728e919gb4ae939e92ea3sn1bsb17gb28e919c73j UW4Kz2kU2b8nF3kdB1X4jenF3a7kW2mfK1w5jg EP4wB3kG2548o438A1eC2546q63aY1eg1aE147sv3lpz1J82lad YF4Sy2W1W608tmV1x6un SE4QO4jP1872843btsH1co3c893dkr6e45gG1D2y2 AF4SH3J1qC1I5uh1bc5vz4 KX4QP5I1D1K6QnH1E1J6Pn WT4GR52u61kO4B1e1fnaf$3413tQ1h WL4_X5W1D2I4OaT1E2J4Na KI4yL5W3C8dkV3B8ej EF4wU4G1Y2z2_3J1x2oD16aE2$2 IB4EZ4w1_39epZ1L1_1mU19gZ1$3admQ1O1$1hJ18b AV4Cx4jI12G196oM2pO19l34178dbp529D24109g54vgB1796f9p8b834a58oy1 QG4Ow4pE1O1K3A1N1tD25a15477j385b U$3_S6kQ1abpJ1srambe6e45am366eaq45cm364ecfamnG19n1vbgsK2bgJ1X2sv59129vnG1F1x2ch8i452c II4AI6arcetS2bbcv9b7mD1H15e9bcD1proN1E2K29sac yF4_A649D1D1tI3om5knn5kw1_1I1Z3nD1 Wz3ST4N1_1O1G3M1z1L1F3 SM4_x4g06B12R5j03U6 GI4EX4X1X3O1B2co36M1A3J1y1 _J4UU4gp35_2z4pP1L2A4B1O1uA2 GL4QV4A1E21aD2C3vD2677hC1P18guR1 WH4GR4N1A2jL1in7ffohH1M1$1O1E3 KV4QV42c87W2y936lF256bN176Z1R6eb QK4Iy4oF18g45M1Y2vQ1P1L3 wK4EV5Z2R6diw2S6eh SY3wU6I1A2a2A2F2cuV2Y2T1x2cl CI4yB7pf3k845C1753qw3G26x1f75E1d72bN1n0albeV1 Ux4SM71kW7I32jV7H3 w$3OJ7bm57J1Q2blE1z1488dtX1B1G2bluR1468drR1tW1blM2D4gmD1w1I2E4 CK4KX87fjC1vx1N1Y2emsV1cktQ1esE2N3 wD4AM7M1I22c$1Q25fcb7D10D1k$1 wZ3Sx7vV2V2E3A1W2qv5dhmfL1E2P2mw1a9 Yw3_D8F1M1E2w5G1L17jlqnD2cb5fben$1mp5j OM4E$7L1w1ammraC1chbtovdr659l16vJ2hm8e23G1W2 IC4KB7iK1jmcq9gdpfqH2P3cn8e5cem6diu38km58aeoL1488bvz1363b45hJ18beC1chcsbgeu WA4MI7grQ1w245qK1fujvboH1B2enjt EA4Kw6tM17jkpfv3659hR145dv7a24b88gfmfD1O1x1cu36am8boy17cak45cu UD4Gy6ch5dif4onC18i58cuin7fadmC26c458m7e37fmcA165iK1dkH1Z2ovbn5dlA1F1Z2ej8g _A4OR7cspu9r23fpgh7nfk7lgh7nfi7jgj9ldi9lqr_1C5 yw3yw6G2y3cvej39krZ1J4L2C2coy1R12eE1Q2rE1L1P2fe wy3QM87pkn5jD1K1E2Y5E1J17llqn$1ef5dbg9t89d0 IY3_$79rkn5jD1K1G2_56717uB17jlql$1ab5f9edF1 yW3Gya2647K1K20C1621K3500m505ov12nu20J21j502D1620plL114357lbm7dgt68 EW4AAbhW2tj5mph4lvliT2332b8629S2y11a28 CQ4AyaE2Q13mx1H1nM3_1K12dc83i6a7E1B3B26v84C1P4 Kw4QKaeV2Q1s680C1qm5uX2D1 OU4WW9fsF1x1B1C2E1y1hC1L1X26D1qL14ha269g1O1E2 EZ3AYax1F3gta6kF1rP1z1S3uU1ajU1W2cj wW3CQc2ia32q7406c34A1G1f8O1X1g0874fD4c3 GD4SAbk69U5vbaP3606z1 _V4GEb5s537G1A3y1aP1L2R12fb7 QS4wLb8U2B3b2H1l3aT4s63M2510sa21sK2h E_3YNb1C2W288R3x150S1v3 Q$3wOccQ3N1e9P3M1d AB4yHb7706d34tj13Q2d11G1g01Q1I148V2300L1 Aw3MWb4q340ga00uT1a0N1Z2e1vG4l _V4YZceu9eZ2w12g5ad57D1Q3V2 EN4MUbA10Y3F127302hh10B1d01A1p10ap11aF140ip00u Ew3Yzc9$1X1G15F1a317k91lqb4kk78Q1524G1322e74 wY3EHbc27Wcb18Vc MF5N2qY2I2B2pX2H2C2 _H5GI1ix1T2J2fy1S2K2 _T53E2$1Q1_4F2A29H1a98mO1L1D1Z3P1M16k9abF1 _B5QG2unC2_7roD2z7 IF5SD1jG2B2z1mD2A2y1 CK5W1G2C7P3Q34a9aJ2N7w3X3 W$4SdC3M5fA1hv58N2L4kH1 CF5UmW1G3gr6ahsI1I29e9h16jF19ed7Z1N3qL1 IK5QuC1X1D1D269H1L26brR147rV1R1W2E4Y7 Sz5E40m$227oA1Y39aD1D4eJ1I33 WB5AT1ba4iJ1E16iN1I1G1M4W2J2D1L4c99F1 U$4Ytj_1A2y1i$1z1Z1 yA5MpvN1478c696akJ135mH1fplO135H1w2G1Y1et CA5wQ3od28c509g70asn28c509g72ac519E1jcE2522o634u524o614K1vu9rdicu876iO1P1fH49L1415L151F6I3qU2G2y5I1J1695da9bB1fiasrG15d437l367p437l347l457l367p437l34hR1a9 A$5MJ4nodF193L4U4j73b6vabK3N3y1N1uw2 wD6wF31s$4o3H2K3f08y1s wS5yw3kf8A1N1S1fncd9D1bc3J1upiA2 Yz4yz3E1S2eh075934jR1E1P1W2G6F1Q1jN1231d33dkC1Q2w1N2B3D7x1M2 KB5MG4csB1O1btV1E2iK18b9rC1L1cuW1D2bry1L25fF2Y2 YC5OQ2iW1148q65cG1546ox1U1H1N4w1V1 EH5UM3818ccW3vebH2507B1uD1 UI5GI456fH1455f9l34x1Z4149nE1D17lJ1M11eeG12843_2S7M2z29D1dc2iJ1A2 ML5UK4gjrL2J2W2uW2a3qK25eI1Q3K2T2pJ2fi8i65cE1X1_1tz2a9tX29cn$1U1$1eI1568k _z5OZ3cC13mB1E1b1hgbb0nih4jE1F1a6 YW5O_3B1I1vX2E1H1uY2 GX5Gy2N5L3cV1_1E17M1848H1G3y19w1 SW5SE30a126O1bg9bH2i3X1_2n Q_4YB3U3x1iO3T3y1hN3 IV5OK3B1cF1G15jtG1C3U3s91L2fB3 _x5_Q3fL1O1P1as34U1_4J1K19vfg713ngj1bde5lcd3bhg9f2fgf W_5Wx3Y1K5J2M2V1J5I2L2 YE5CD3dM1dilgV2C1$2aI7Z3 MT5Sz3cC1vO1aA1C1D1eM1T1I1vL3O1T1 yL5AU6V1vZ2Z90jO3A2c58iW1C1H1A8 UB5EV655aneh2ec9hB278vR3gdoy287uU3vulY1V1Z18nK1M16h EO5wZ4F1L3K2P26kB2G2A1Y2cbuW29aA1y2E1H16iL1S1H1N38fpH2b4 AA6I_5kE2X4M47B1polH23la9kM2sn8A1kf39c928gd37c92agd17cb48ed17cb2aijfN1cb WZ5yL6_2QaH1E15pulR2F9R1O14i989D1G2B2 GU5OI5D1A1mI287oC341iA278kK2E1v5jpm9F1213d87N1B578hT1ql5h MF5QV5iM3V1qjH4e72eA190a83 AD6UP6nw5dy1h19d4tD1x3A3V22a WA5KP6a95jojfZ1Z1S1mQ2ol ER5Wy4L1x3676e6526efc28g23eG1458mtC18gfg yx5_M5m22C1502ak36A3922qd22sd2bF6 Sy5wI54_2m34U1i3c_5P1a4Y1j21L1c11P1C155$3n43F2j45F3m3 Sy5UV56S1h20a926w3w197R3q33V1t60fp6 CB6YX58y4P2e0kR181tB161D1U190eA3f5F3n47V3t61H1S178K4o5 KA6QK89sb0F1$4fa4a$2ofH2q52nE6C145cuH111Y1913Q2 QU5O_63M3B210b600tt679f33s401i$1b5d1D2g10W168C166J1E1aK120M1G120Z2e0 QB6GT70Q5l578qC1k70N6353870 _E5EY71sa21C1a21A1a21C1a25G2L1C1fnjV2e7iM28csj4rB1N4761f2joa Mx5AV70nk12A2600up20H1Z26372jc10d800ei10da00ei10ba10ee1 wx5AP7G11M1D18C1406S1548W1jahX25g5b96iQ2J1q19qfbB2d20c96dB283 YU5Mx74K5B2d1x4A20 yW5CB83R5T122_4A120cm4 CZ5wT9$2l25n53I1W3C14H1 QA6EK9D1mcw1hcqA2k77D2411l835T1 YA6ET9O1W53cP192N1a3bL1h63f547te73dc73bob WM5Aza43eg7m33diP1K25b7k5baft$1J1Q1mM2c94eb62glk3he9fV1F1C19agW1ab6glk3d9g5febdB11loB1mha19tS1X1lL1G1H237ajci08J1K2Y1S3S1N24h AE5W$9W1B4L1T19oA1A10erC2jB1rtiB1dht_1ae6dgsA1G1429gcg _Z5ww91oW160Q1Q1a4L1C1a2lL4v C_5M$9P1A6$4T32vkceZ1med_184qZ3catE4cac54jb9oz2E1s9M19558bU1U1I1A1$3H4$26ry4M3 Y_5SY9jH4i72gc52g61eC2321w1r5 Cx5CA956gU1C1p5ped9J1g93l745B1d6aE1B1saA1ba yT6z14W2Z3a1V2Y39 _S6M8D2M5qC1A1P2aegF19dmV1rB1 WS6GklQ1B3T3kV1uK16jos7mQ1S1 QY6U5T1C4Z2R3kN1ekiF1w2Q1 OL6R2M274w5J265X5 QO6P1C116Q7v27P7 wS6Y1F3a2G2q12i902G1A250R1i11L2 AL6P2B242E2a02S1a00s800iG133D5 KZ6R1X280d902I3a10dY271J2 CP6IuZ2N3iJ1eg7ky1K2qD2J1T1anw1I2N1S3 OY6MsX1D2gH179_1B5eiX1O48abA1sE1C2H59b8losT2Y6 QO6CH25aaS1pi6ajsfB145bZ1sh35ktgE1 OL7CE4T1lb_2S1mez2 KE7KS327602hT6X23mk816y5O2 CC7Oz3hS4g65S15a709h2pB1dmJ5K1g QP6GB3M4_19C2L4z1aB2 yW6OX2kY1U3B47l235hB3M33dlo Oy6Gx2pB2P1_1sC2O1z1 GZ6G_2T2x13k53nC3843amg16Y1C13ga2A1N4 WH7_F3O1K12733qx2fj6B1b97ub3rE3 _H7IO20Q7v00le00D6N110lA22 AH7Y$20H1O100eG100bd01N1s00A5b00Z1d00hF20 AK7CX2k00w4j00X2500v400bH120aB120bD100ta00nC110mA210P1672_136 WU6GY2rb8D2kX1w1N1aE1vI1D1K3 y$6KO2lX1L1Y1brdiO1Q3ehbrM1X1 SH7GE47y1E1m07626x1l7gN4f5hM4 CD7AE4gP4G3E1hS4D3F1 QH7MM4W1mg$3J1f36bG3931i Ux6EZ2qC2S1$1rB2P1A2 WB7_U2S2F30K3V1E2rH2 OI6__20sckG2uE198b6p3P47df5n6heJ1_1jU1 IK7IL52dl95gn9mF5W1E16pD2N1vG7_1k6t II7MN5y1ogg3eL1n3_1f57M1f3gz3 wQ6EJ60G1j22I1k00i304e920eu03V5l42M1j406m3 GO6_M5hP27hN1A1ew1qjcK1kd _Q6AA6cE70aj419d4bF7E15 QN6_K61D1I1b5X1D140678nc978y2G19 yM7SQ5covY13bT2Q4T1N16R1E1sG2z3iC1uT1 SI6QV5jJ2iX1Y1F10hU1P1i52buj4ckd8Q1L1E13kgU1ok5ivjd65C14evs535lvs5h30H1C1 OL7CH5Z1O3ma8cA2H49dfC19f MF6OF5J1M1O1O4K1N1N1L4 KQ6IY66mR1E5x1N18ra618G1A1I1N4N1r1e538vY1C1 _N6wI83S1910vF5D10od14L1i425K5M1 MG7IW61sp5dy2a61iB1hkN4q80am4 KV6S$7vY5X1tuH5me4hA1i yV6WD7fI2X1B1A1Z4og7A2oE1 YG6KN7z1A2bF12P18hefg0qm8C1 AI6MO7rF1H2O2gO1U2V2 EY6IT82H1iV2c83k45c81ee87Q1d91A1301ipd WJ7GM7473lbtb9f2D1s9mcU1cg80W1R1 OK7CZ6F17dy5a24H1q62vf36P2c28B1 KT6EAbdu8cbm7bds5754570f9fethrqT1O1K2 ED7QQaR2O3pD2abiM1A3T39d8hmE1B1K113 I$6QBaS1S1F1W3R1R1G1V3 wC7MEafY1c3U2y2kL1D3D3 _T6ODabW1Q1K1qD3D1vbO1d9 yP6Gx9273fa739C1B16g58skf_2532jvddn wK6GB9J1U4b94999sz275nO25nqJ23dh96ly1Q1 EA5YCbZ1O1hJ1qJ2Q1U12i GD5CUbO3J3G1U24M1F1G13F1bdr6vqb7949d5l y$4Wzchg8s63aE1a7gw1434eC1trH3F1C17D1 IR5IYb3lC4D2gW3h65N1b4572de53hP3W1 AR5SAc66y3p2v35z3s382m IR5QBcy3p0o602eX2q0rp62ah41t OW5YCc0oZ3c05ta911v200fg319q52M1Y3d CS5KNcN122X2S1j2A17c4I13m _W5CLc0852T1l3X1Y1f6U2 SR5E$cfdkR2ca1coi2egebU1J1v18 SU5ORcuob_1735sF1nm$2ca wV6wEcZ1L2tS2I1y1up07iv wH6ITcaw1962k74aU1837J1y3H23rR2M19X1vi IE6MOcagi8y4F62pB1J3h7V4G43ukW4 CP6_Tc5dmr0bdvA1J14boj5r65mA2hsdp38aG1bc9j3e318qD1U1 SC7IZb4Y1Y230x1700bN1508r00i90 yZ6KVcnz1J1Y1dP1S1D2K1A32kd6", "major": "AS1EM1HH1OE2 YR1YL1RE1S$1 yqlWmAJ1 QnR3KpUN1 AbSR37v GdKL3H1uV1y2 Y4MH3e_1S4C8 C5wG3seK4y7 AayQ3ag AayQ37g AbSR3bn YaSQ35j KaKQ3H5P9 WaCS3$1W3 UawQ347 KaMR3ah EaWR369 UawQ39f Y9MR3ca KaKQ39i Y9MR3xawi Sa_P37c EaWR3ic KaMR3cm Sa_P39p AbSR3WlOt KA1SP4TlPt C5wG3D5D9 Y4MH3I5Q9 EaWR3$a_i bE_2E5I9 AbSR3A2N3 WaCS3af GdKL3T2U4 WA1AP4GC1Px1 YewS5N1E2J7Gd KA1SP4Y1M2 0_O6E5Hf YB1QS4OgOm yC1SQ4QfAl OC1MR4X1L2 CC1_R4QW1UJ2 ydyP5zeFq CC1_R4ch IfIS5L1L2 ydyP5OiJA1 ydyP5bm YewS5gh YB1QS4ah OC1MR4UB1$w1 bWU6M6Ri R1IY5G6U7M1I2 OC1MR4KW1SJ2 jwX4EeYo IfIS5QiXv YewS5OrQQ1Wayj QdSQ5I1I2 IfIS5SuAW1S9Mi QdSQ5L8Ef A6EC6ytQU1 E5W$5OvGX1 vGY5E6Q7 WA1AP4bi vyK7WF1Id CS1Yx7Pdx4 MF1MY7KiW6C1E1 rWJ7YE1_c WE1EY7GpUM1gUbE4Ir MF1MY7pP1 WE1EY7m8 SE1yW7l7 MF1MY7yo_L1iKcW3Qpqw1 yD1UW7qQ1 L3yGa_nEmMcEbQ3U2 1yR9Y1G3YbQu Oc_UaNfNe OdSTa1I1t4 ON1YGdw3VG17R6B1$3R2Z4R5H6X2P4N1$3pH3fX31F4cB4qX3w3XbA4Dfy8JvW2B7W3V6G6z8C8DaQ5R7G1J2O4XaE2z5w7JoC6TkW1L4C2B4G3D5C4T4MiPh _N1_GdU3HE16D45z3tN4H2Z4D2$2z3J4T2H4X1x4nB3dB31$3cz3oR3w3XbAbVH1W3FbI1x2M3$5G6z8_7DaG6x8Y5ZdI9RsA6TkW1H4A2$3G3z4A4T4AhNg yfCYaCiIgE12K2N1U17skM5K7I30 yfCYarF1R1J3 yfCYaN3D3 yJ1wxb$1F2z3R5fH1bL28R4cto5 Yw1yFd2J47P3hR3D1J4n$1X1J3X1B2D2J1D6V1$5D1JctBew1T6O1Z5C2 yJ1wxbH6H1x5X2x19HsK5 P1yzbAuR5y1iy4Q2E7M1AdX1S4sW5y1 dOPcEaB3OgJ2CfO1I9K2Q1sA2C2S1S2G1E3C1E4mI46M45w3 OE1YKbS4G3S2K1M24S2n QC1YVcVbgTaE1z41z3U1N3Q2 _N1WUcDattmbK1 QC1YVce2gF1k9S9m OA2ClQiKB1 QT1MM10N1A2N3 YR1YL1tV1 UJ2QdJ1cP1dN18B6w4 SS1KK1pO1 AS1EM1oL1 Qx1Et_4B8 SV1UT1Kdyv YS1YK1IdXm_1V1y7J4 UJ2QdZ7K4$1W1Hdwm wQ1CK14G1V1W2 WQ2Qx1JdCn UU1D1WaUj K$1Qi5a IY1OvP4Y7T1Q1hb wJ2Ae_kNbO3T2 MD2SS2xfFG1 UE2OV2U5DaO6Zf OA2Cl67 UA2wkW1J1E4J2M3F3 UJ2Qd_kPbO3V2 E$1wiK1I2 UA2wkJ1J2 UA2wkOeCqQB1Ix1 _N1yU1K4J7egM2O5g4 SU13Sa_i YR1YL18c QT1MM1nT1 SV1UT1X1H4Z1H3 SS1KK1v$1 YS1YK15d OP2MP3Zazp MD2SS2fu CE2MW2SaKp UE2OV2H1x2 MT1wH5qR9Q1z9C2x7K2Z5A5X8G4Z4O6B5w1B1w3N1 yC2QT2G1y2 CE2MW2it UO2WP3B6_2J5E4$3U4F5O8B3I7J2S8P1y9pC8 IT1GJ5nAjY3YrC3Au6U5E1K3 GS1_I56L3 GS1_I5mec5 MT1wH57D1nD1 wX1_R7x2$rP3Dpoxj IT1GJ54L1 wX1_R7a_2 KA2EK8J1P2F1L3F3L5 ET1Cw7B1W1 wX1_R7T2M4 AX1Ix7Y1_4 AX1Ix7C6KbU2O3 AX1Ix7D2B4 ET1Cw7Y1x2 KA2EK8IkOrKvCO1S5Q9M1qM9gS5Y1G4y1Afy9Y16 wT1Iy7nl3j6r EY1yU75Y2R2G4pk EY1yU74I29I1$1M3L1m wT1Iy7X1f SU1Oy7n5 KA2EK8z3B6$4N9 Uw1y_7H3H4 W$1AK8x3X2H1H2pZ2v$1 W$1AK8UlUtwvCP1 wE2CNaH1GN1 QC2ULasA4F1QK1 wE2CNa0h QC2ULaWF1MeCdK3 wE2CNaGC1EdA6Y1y7W1ae WC2KMaE2o WB2CzbF5Z1z4tH6iJ5E1D25 GC2Ewbx4F6N5$1X5$2T19 SF2K_bF2j GC2EwbM14 GC2EwbK1_1 SF2K_bL1rdp MD2Wzb2r GC2Ewb1K2dk wC2Izbkd CD2WEci_o4ueqw8E1y3b_d_5 YD2UybyoxbSbz3EdD6 QD2Cyb8i QD2Cyb2Z1 SC2U_bog SC2Mzbr9 CD2WEcfB6 KD2E$bUlWfG84W2bIgz7_7U1 MD2Wzbh5 UB2Yzbub SC2Mzb0I1 GC2Ewbau CD2WEc8R5 KD2E$b2N1 UB2Yzbus SF2K_bCE16QhU3 wC2Izb08 wC2Qzb73 QC2CxbaG2 SC2Mzb83 QC2Cxb2K2 wC2Qzb4C1ci OD2wyb2n OD2wyba5 WQ2Qx1I2D5 _S2MW1YswS10E1 wF30O1S4M3_dK1w3UcUqE6QfQ2S7_6_pU4CfA2Ubdw4vw4F1U2V1W1t1V1V1T11 YE3H1W1S4M3ydO1M4EdUrE6SfU3wby3yeC6MkE1y4 _S3UP3$1L2 KP2QR3eD19v _S3UP3O2G6K1S4sI6I1SegW2K1w3AiII1W1U3Y3E6I9Yaw7_7S8C7K1oQ3E1S26w6rY1tw1T1_3x4 UO2WP3S1U1 GP3AM38J1 AQ3wN3uh GP3AM3z1bTlM1F8M2 GP3AM3gW1 _Q3IN38V1 _Q3IN3X1H1 WP3KK37c SQ3EK3r6 OP3WK3L1u WP3WN3a4 AQ3wN3U1M1I1W1K2S5uK3A1w5K1YfgA3iW1yiIK1w2W5Y2G4I9YaC8K8_8I7K3C1E3ey20I4rW1nE2z1K2T2Q1R2 _S3UP3L2P5 OP2MP3pa GQ2KR3I7F2IoN1 KP2QR3s5 OT3wQ3901g AV3QZ4x5I5B3S3Z2Q4X2K6 QG3EN5N2x25g KG3UN5z6UoT6Wk QG3EN55g KG3UN5N2x2 wG3ON5_4E4Y4E5Y2y3Y1K3Qm_T1KcCr WG3yN5$6SoT6_k WG3yN5A5E4Q4y7S3U2C1U1CnKV1WbWp WG3yN54d wG3ON5U2$5w2P4_2L3A6L5 wG3ON599 AV3QZ4c96m GV3Gw4c9 KG3UN5c8 SA3yX5O1F7y1z5 AV3QZ46m WS3WS4K2w6 GV3Gw4K2C9W1w4w1E4Y8weG7GfO4M7_2A4y3K4KmCjA2kY6kK6B1M3V1C3$2C3z4E2D5O1z5 yY2Ay6Uv_K1A8_kS1G3E2_1A9O5A6w2 CZ2Mx6UvAL1G1S2y6Siw1I3w1U1GaO6Y7K3 SY2Sx6ae EK4KQ9F8B8zeVaX2P2VeNfP6J7B6L8J5x89F1aV1S6NeK2F6 yY2Ay6D2C6z6Sf4A1Q3_5I5y7_4G6AjEkQ2I2GeEay8S8 CZ2Mx69d yY2Ay66j YY2_w65k EV3WWaiA1 EV3WWa6s1Y5 GV3C_a3w78q SU4AufE1t0 WP4_U1J2Tc1H3qN3Q1T2y1pU1u WP4_U1C2_aUbYR1O2_6U7YiS3_9 wG4R3QaMZ1 KR4wV10L18jw3L2 QU4wB19t QU4wB18N3kH2_cNs KR4wV1y4EqM7YvA2W5O8ClA7wj QU4wB1kC5I1y5 IG4J3Q7_I1_1Kf GU4yA1B1X1 WK4B2E4AeM2w6M2E5U1U2I2Y2QcGc_2Q3w3_5W2C7y5wiS4KbU3ScgcC17 QL4hS3KcK2W6O2E5S1Q2I2Y2OcEc_2Q3_3E6W2E7y5wiE4AaM1G4qI1K18 SU4AumD2ycNs SU4Auby2 QL4AF4O8zcy3V4K4R3W5L3U4F2I6V1 EM4ED4G8ZcI5V5Q3P2S9X4SjJ5y2N1I3vO10E3uEh_6W8M4 EA4UK4G2F1y3l IB4YI4_1N1M4P1 QL4AF4B3E2D6Y1F2Y1 EM4ED4B2U1P2C1 EM4ED4T1y1x1I1N4E1z2M1 GG4YI4E4N2 GN4WU3A1y71E1z3C6T2C2 GN4WU3K1_7nW6fE2B1M2J1w1pcll3v6vsv KK4KG4G1J1 SV3yZ4oY3Q1U5M3Q8w7CdE8_gM4M7Q4w5G3I3SlIiM7C1W7tQ3x1Q2R2_1x2S1B3C2R5A1J4oB5eJ8F1xc wX4yM8Q2Z1U3Z1CfB6 SX4EN8X4Ob$3Mb AY4YN8_5T3OfF6 AY4YN85r wX4yM878 SX4EN8ek AY4YN8B1C2H3E8V4Ad AY4YN8I4Eay2E8O7EhI3G9 Cy3yKb0$3gz5Q1J7_gVU1 KM4MS9S4P9 Q_3y_aU58_7w2YhCb US4IK9k4kD1 yQ4yI9$1J14T2 Q_3y_afm3Q5 wy3__akaao3C5 Q$3EGdH3BA1f$sgH8A1N5S1P5AgzR1 wO4_D9z1y3V2y7 wy3__aL25J1lN3L6 GT4IJ9E3s OD5OOaZ9R3D2X1L1J2$6ze EK4KQ9Y1E2 GK4WP91k yL4OS9e1 yL4OS9I3O5 KM4MS9D2V2 EP4yX9R1P3H1$1 KW4EK9Y5S3S5Y8I8y8 GT4IJ90sh4 wy3__aW11 SV3_za7Y8 SV3_za4H6 WV3WXa7T1 SV3_za9j yQ4yI9Y1M1 IV3Kza1o Sw3yEb1Q3jE2kKbG1E90C2dE1 Sw3yEb$14H3W1 IA4KIdR3RA1jxs Wy3ADcR1r yz3CFb70 Sw3yEbC36 Wy3ADcon_4J9C2D2U3X1C6mU17y4D2G9L6 Wy3ADcA6I1KjiAe_1w4fS3vE2eGhX1 Cy3yKbgE1c0ahcL6 wy3UAcC1Rr Wy3ADc4L2 wy3UAcbM1F14 Wy3ADcpK14_3 Ix3ECc30 Wy3ADc2M4ns E_5_lGdKP1K3SfeA41C4V2SkE3Ye E_5_lR6Tm E_5_lC1C5wbQK1O3Ggay31K3X2Gkkw3 QX5QI2Kf$9mjkJ1C1rw6F3A5D4y2N3G2D3K2T4I7Rgy2F9_4Z8 Az5YE3I5lS5K2 Ey5UH3C3Sbegk7kD1O6Jky1P3Y1X1YfNcGgHf Cx5KI3C1M1K3Ybg6sP1y6zlY1D3w1z1UfFcAixg IQ5QM3O1L2C1rQ5R1 WM5SI3O39Q5H1G3rC1B1hB4nD1$4Q2 Mw5_G3biX16 IY5WH3S2i ww5II382 WM5SI3QcJ3w5J2G29G3oMgG7 EH5wI3K9$2w8J2O4T2A2dO3E1I5_2Gb_4 Ey5UH33V1A1F1 Cx5KI3kb4H1 _Q5C$3tx2T1P7hF41z2 ON5OB34D3o$4S1N5C2N5M2R3G3L2 QX5QI2F2A1F2C2F2Y4N2_6pW3fW5i_c ST6OJ3VjR9P1tL2P2r7 wx5WG37lh5jE1 Mw5_G3eK1 _Q5C$3G3I9WaGmO2W5Y4Ie_1w7 GO5IP3nZd _Q5C$3N2Jc Ex5Gy2D6M5N1q ST5MC3L4s MP5CP3sR2 GP5ID3nuaw4gU1A1y1 QO5YS39P3 GP5ID3J12dx1 Ey5UH39t QO5YS32H2qN1 IQ5QM3F1K2h1bn YN5SN3eW1 GO5IP3eaof WD6UG7VkLI2 AL5IV4G4GdqQiD2OlJ1waiWoG1CbJ1Ia AL5IV4E5KeGjGE26MV1A1Kn2M7boD2dL1g AP5I_4mE4oQjP3Qv1M3mIlI1Ude_1I1_2A1o QR5IB8MqM4SbU2 MB6Gx66f MN5_D8A4T1U11WnY3OcA3Y4Y2S9G7C3_2w2O3 AN5GD8co QR5IB8P4_1 CV5CDbD1B5 CJ5CGbydHb UB6OZaI14eH1S1Ps YK5EBa69 AH5AHaY3x5 I$5wZ9G1iE26U69I1jM2R2 _W5wwaipI1P3sn AH5AHaH2Y57O1 KX5AVak2C1x1 UL5CCabR1 yX5GXalC2fkXcQa KX5AVagE12C1 _W5wwac14eL2A3jaff CV5CDb9D3iR1 IQ5wBbJ2x3L4O50qc6 I$5wZ9d2 YK5EBa_5Eb IL5QAaW2Z5I3H2QdW2 IL5QAahx2 WK5Uz9pW1 KT5IzasY1E1j QE5GOa0a QE5QOaO3G1G6O5E3_3O1O2kY1 W_5Ex9dC5 __5Cx9u5 y$5yw9U56G6t WQ5IMaS1U2C5E6 WK5Uz9O2Z4w3R2Wdy2 _T5A_avZ2vz1F4z4F6J5B3p IQ5wBbZ1Z3pbN4y5bw1 _K5wAaB1P1 _Y5OTaB1Y3 _Y5OTaK5Hj _Y5OTa6A1C2K1 Gx5YVaO6W3 UZ5YVaS10 yJ5K$9sw1 I$5wZ9jl WA6Uy9P1M1tG2 AH5AHay2V7 wJ5Kw9sK3 KT5IzaA4QfE2AeG1Cc w_5yZ93I1 W_5Ex981 C$5Iy93F1 __5Cx93F1 w_5yZ95n UB6OZaG2C2_5I3E6A7 KV5M_aK2X2O1F5il WA6Uy9J149f wJ5Kw9kE31s UL5CCalH1 WQ5IMaB5Fa QE5GOaB18 OD5OOaC12 C$5Iy96rkf _K5wAaa9 wH6MG3w1sek6_3K2C9 YU6SK3zcF4 YU6SK3MgS6Q7_3 OP6GA4K2S9W4KsA1Of W_6yN3DbN4 ML7YT3D5X2R7D3 SM6yU3y2Kb QX6yV5aQ4gK1Oby9 _E7wz5ga CF7Kz53g YD7SF6T1M8N2EgT2wl4M2 EE7_F6K1Z7 OF7E_52h yI7_C5d5 OI7YC5L3Sq QF7Sz5M3Tq OF7E_5O2uG3d _E7wz5F1Y7 EE7_F6O1E1Q5S1 OX6QV52c UI6OY6qB5gH79F5vB9 SI6Mz5jD3 SI6Mz576 OX6QV5J8I2R6U5 UI6yz51f QX6yV5A25E1eKaW7 UI6yz5Q6T5M8L2 CF7Kz5LaR7F1bB24 EE7_F6P1O7x1YbL2CiF1Cb _K7C_5L2eB3t YD7SF6cc MI6C_585 _K7YO4P2Ak KI6Sz52g _H6Iw5cK3 QK7EE5T1F1 QF7Sz5d7 yI7_C5S1Rc MJ6Qw6jB13v WD6UG7I2y3_8I8E2Q1W3I1S74uk OK7KX8x3H4$3L3Daz6 WD6UG78_W1uQr OY6YI8bvkL4 Gz6IW7pW4D3U5hw2 Gz6IW7A1qA4A1k5E3$2y21A2n WY6MD8H1y4 OY6YI8vf yJ7MJa5j WL6Ew9W6P5A10WlIl wM6CX9w5X4K11Q2A2MdCdI5E6kK1 wM6CX9J4U2x26np yE6wx9S45I2P1 MJ7IKagr IL7yFaR1y2 CJ7yJaT8Ab$bOcF3_5 CJ7yJaac OK7ELahX1 WJ7YIajE1 MJ7IKaQ1A3 yJ7MJaU1B3 MJ7IKaN9AcPbybX2A5d4 yE6wx90X2 W_4EMbrs W_4EMbS3B2S6X4 wz4ANbS3V1W7H5 CJ5CGbw12M5J4 _J5MEbD1u Ww5UEcB1$9$1NdR2Da AV5wRbI1U8iy70U3e_2aC7bW5n_5N2Qa IQ5wBbE1E2W1G5_1W8 Ww5UEc2rafM4N1e4eo1shc AV5wRbG1KacQ9g_2aO7D1ObN2Sa yy5I_cy8A3U29A2R1S5x74v Uw5wGc4s MY5IGdI1F5iP3 Gw5Szc6B1 Mw5Qycqzc5$7 Uw5wGc8k Ax5SHc9z2 wZ5K_cX1W7 Ax5SHcC55ah8D2bph2 yy5I_cJ2B15l yy5I_cV2l Gw5Szcbo yw5OHc38 yw5OHc44 Yw5WHc4I9B1Md IR6UIbY4G8_1GbM1_9 IR6IHbL1P1 yP6YFbM1y2 IR6IHb0M1 UH6_FdY3z2Q6D8 yR6ywcG1I6aO5 KZ6_Fc1Y2tE2H8Wb yR6ywcO2H4_4B7 CQ6QWcw1M4 KZ6_FciI3gC1A6K5A4Q2M6M5 _D7KGdX1B2D4L7P2Z2fV1tJ6rP2 Ax6CNc4p5nJ1H1d3rm IZ6SPcY1P2 Ax6CNcsL1", "minor": "Wtx1FgSs CeYrY6ybG1U1W1sU5A1 KtEL1M5cA1C1C6Wa OE1MF2F1R2 SuvPgYs ID1wC2J4G8$iIB1 YE1yE2G9$f MD1WC2M6Nb MD1WC2M1G2 OE1MF2NnYI1 KtEL1YgTtA1D2iB2 SN1MeB8Te OE1MF2af QdWqiC1 QdWqHaBj1L1aF1U3J6 EnyJ1pI3HcElpC2 QdWqhI27A3 Wc_vgL2sZ1 Wc_vbw3V2O5$1y2T4Y3D3M5_7Ee YE1yE2_6Mc OE1MF2_6Kc EayK21J49V1 bElQ2iO1E2 U9IF24lf71qe4 SnCK1vK3Bc_knM2 K9KF2gC25I3 w7KD2M1w1 G9OE2L1D1 MD1WC234 KiUy3E1J1_nTJ1 y6yY3Cj_B1 K3Qy3blJ3Y5 A9KZ4C8Fe UfQI4D8Ge C2MX2M6DbG1l 8Ez29i w9YT31tj7 nY_2_5Sa 8Ez2W5Ea 8Ez29h hwF4I9Bg S3CD3O6NaaT13D9 AaQL22pf22qc1 GayN23P2 W9UL2gI2 B1MH4S8Kf y7MX4N3_5re 1OV4Q3$5 GrWz4I3w5S2CeI1S5G6Mb uCR6vB1 pOZ4UL1CN2Q9Uh IpEC6Y3T6 YhAJ5X8Vf 1OV4MO1_R2 G5S_4O3x5 y7MX4bl A9KZ4bj U8WY4nJ1 G4AW8H5T5 7GD9Y3Db dCB8C2D6 KaIE8TaLb EM1wI7N6Qb OI1IC7B8Ie Q3CY8mB2 AG1yT71ggc WF1KU7J1K2 x1KS8M5Y5 UF1IX70D1E7Dc GG1GV7fr KaIE8A2F6B3Le G4AW8E6Xh U8KO7kM1 y9WO7fc3k wT1yR8R4M4T3Y2B6O6V2A2x3E2z9K8B2A2V2w3$7A9T1O2P4M8z1Q52qaey4_2 L1QX9O2Z3 I1MzbdZ3H1F2 wD1yKcsB9fL6hr KN1Y_aJ6I6L2uz1Y1v3F2z1 ID1MxbkI1gY5pQ8 AA1YzcK2Q1 SqIFdK2S1 MB1YGduP7 U9GIdL1$g SqIFdA3Le SqIFd5o YtyVc5A1 MlCzcA6C4 SmKXcB8sF6Y1 C9ICdw9O6W3Lh StyWc$6e UC1M$caR9 KC1I$ca4 KC1I$c6P9 UC1M$cr_6 I2EEdB1y4 SqIFdRcF8 OcQEdy2Rd SmKXc8B1 QI2UJ2$iDC1A6La UP1K96F8cJ2 wC2Cl3I1gQ1Obwk_4E8 E$1IiA1T4Q2H64P3 UZ1KqhB3J8Ff wC2ClivW1v9v KC2QjgS1 AH2Uufq UP1K9iH1i0 Ow1Grpr YQ1C8tT1 UZ1Kq5Y2 IP1_N1P5K9 Wy1AC40H1btH9xg IZ1OJ3RdFo YQ1_S3EaGi ML1WR2UdIo ML1WR2ad GH1GK28f IP2AJ6$8_f WJ1__6S3T69D7S1J2_1aO3j wz1_S8bV7 Gz1KL8cU7 IM1_K7jF1 WA2_I75$5I11G1S1o7 CR1SM7X2F5 UV1wy67mP2qnsN4_6 KO1MH7S4J7A3H1 KO1MH7jA1n1 YV1MV7V4Z8 ER1WO71D2 QP1GP7sf KN2YPabe2UvaUfamIkWd _B2YLaN4kR4Q2 Ix1QNaN1H9 _Y1yOakC93U1B63B6K5 OX1MFaQ1Q9 KN1Y_aw1GdM1W2K1y6E1E2 IA2Sy9KaH4G1rq6O3D1muO2Y9msOkAdO2C2 QC2ULah4 _B2YLaoi Y$1ELdL3RaZ10 GD2wNcU8kK3G1W4nE51 AV1OFc5X3 QM2M$b8hbd GD3AP1$5Xa Kw2_E1K1tS18 Iw2MC27D3 UD3WG1H5$8N2Q4 _x2GC1N3L6$1Z2 GD3AP1Y3y6 Aw2I$1Z5Bajd Aw2I$1G9Hg _x2GC1T1Y2 SP3GI2C3P3M1B1G3dK1C1K2Q9 _S2MW1kT1 Gz2IE1H1B2 Kw2_E1H2w4P4Ab ID3WE2oy7 G$2yz1fH1oN1F1R3 MP3EM12x2cN1K2$3e6 AE3SM2E2_8 SO3wV2M6Ab _U3wA3X4Q8 wB3wP2U1z2i9 SO3wV2N4M9 AE3SM2C1fK7J1 KH3QZ2F1$3 EG3QV20ubA1 SO3wV20L1K4L3I18I3V1u1Q2Z1 _U3wA3W1G3 GL3IP2M3S6 OR3AT7RgzD1H2X2 w_2_I6E2F5C3I6 SM3_H6V5HcF3T3 UG3WP6O7Sg _z3SB7V6Dcz2DaF2xa _R3S$56s OU3Oz5i7K2x3S6Z8 OU3Oz50h UH3Ez5S5P8 _I3EA6z4y9 SS3_$5y1P2 GN3GH6O6SgQ7Ge CU3Cy5j6V1w2 QR3U$5z4K8 _S3OS47879a7oO1y1U5 AE3AK6U2W5 U_2KM637 UG3WP6_5X7 UG3WP6N3Q4 Yz2AM6sa YR3C$56g QR3U$5e1 YR3C$57i _R3S$5kc Q_2CM6bD1 Q_2CM6hbf8 ES3OA6ef SQ3YP6H9OdH5w6hM1 wT3K_7E5Z5 wT3K_7N4D6 ML3CV7V9Wm MC3QM8I9Vl UF3AL7W3T8Q3z4 AE3OM7_4Vb A_2Kw7A6xd UF3AL7$6Gg AE3OM7NbNf0N1 wA3EW7M6W8 IS3GU6O3B4 IW3IF8R1K4lI3F1O3fG5B2U5 MZ2Kw6Sbwf MP3GY7C2F5 U_2Gx7X3w8 MP3GY7X9Fd wT3K_7hk OR3AT7G9xcg5 AF3_D8L6X8 U_2Gx7jr A_2Kw7Z3y8 AE3OM7U7Ma IM3OV7jM1 UL3wW7UaOe YB3wZ9$3SjR1U8 WK3ERaM2V7 _A3UX9W4x8 WK3ERaU9O8 KU3SZaA1S1 KV3CZavg U_2AQbA2_eI1ye CU3UGcK6x28vbp KT2CDby948ciU5 Wy3YDdRg8 AQ3MxcSdN5 GT3AHcdG1qy7y3wj4_3 YT3IRcB4W9 YF3w$c_4X4O2w4K2F4 YF3w$cX3Dg3x1 YF3w$cT1E8 CY2yOcR2Ij yB3wNcw20Q2n OP3Wxcaa8j9d7o Ww4OB2B3Jh OX4IQ1dfj$2 _Y4Wm_iIh _Y4WmC5Pb OH4UZ15iQ4Aj WS4EI2L1X5ppD3Xa9bT5G3 OX4IQ163 KR4AT1I3Nj MV4OR1C2F1 Ww4OB2ql UX4EQ1U7J4 Ww4OB2P5_4 _S49L1E1 OH4UZ1T1N8J1P3tV1 IW4j8M5y1_6w1U2 GV4MG2h2dp Qx4YA2Y8V7C2iM3V2ee4sT1W6bM36w2iM2E1Q1 OX4OkM7Vg AR4D1O6Sl OX4OkQ1I2 Qx4YA2K2K8Z6w5 _W4WW3G7Gj IT4SK2z6E5hP2 CZ4OD3Z5xo WS4EI2z6C5 _x4yR3X6S6jU15w21w7K6EoU1K4A2Q6I1E2w4G4AcC9 OE4MO3Q1hI1U1mQ2iI41M1L4I1nmL1llR1z1L92F4S3L2S1C7 WV4ON2lZ56H1 IT4SK2hN2 yy4_P3t_1 _x4yR3qaW1C4M1K2 ww3YN2Y1Q7 y$4KO4x6M8 _x4wZ4QbPe yG4EN6_2F5 Ew3OK6Q3F5 AC4EX5L3A9vE5 wQ4I$6rL3vJ2V4D8R4Z5hjB23x1_1 Uz3IF6z5Lc Uz3IF6Q9Mj_2C5_3O8 UW3KE8bu KI4wQ8YaTf _Y3QY7W5Gf GC4IR8F3w3 KI4wQ8D8Nr SC4KG8I2p EM4ET7P9Eb wX4QJ7nC4 Qw4wO76x1 Mw4GD7lc9q7I3jE3 yY3YB7X1y2 KY4QG8K6P2 KN4QI7L6R3 IL4WY7C2Z2 KU4AF8dz2 KG4_F76pe5 _G4_E7Z1D1 Ex4Wz6lS31_1 Ww4_M7eT4 QY4YK7R2$3B4R4jF1dX1 QY4YK7G2G2 MJ4wY8qA2z1G5A1u7A2 GA4MV7ef _z3SB7W3N6 YU4UM7K2u YU4UM7N7D4 CX4SN7O3I1 AO4EG7lM2 yT4CC8brd0 EG4UO7F8Bd Ex3_F7Q5_e GH4QS8T2$4$1F7 OE4KC7z2y4 WT4K$75E1do IU4GX6N3C8 Ex4KI7mX1y1X1 K_4YA8$197K1z2G1 YU4UM7tMd3K5 GA4MV7H7E3 SC4KG8z3M1 Qw4wO7E6Q2Q8Q4O1G1Y1O2_1ukS1 wQ4I$6pS1$1K5 yT4CC85X2 Ex4KI70J1nZ3 KI4wQ8R3S5 YE4MW8x2M66M1 U_3WH8S3S9S2E5 _z3SB7Z2M4 UA4yU7Q5H6 EG4UO7M2x2 GB4WH9C2N71p IH4QWay8U38le5W2C3Y3G3 yB4w_84C1x1_6 GP4_X9K2T5w1$7 SS4E$9U4x8W3J9 MZ4AM9X2y6F5w9 EU4Iy9W5U57D9H2V2 UZ4EQ9E3C3gY2G1G1B1Q17S2D2kL17 yZ4EDbE2X5 UA4yE9C1s Ax4IYaW8w9_1M42qdm YA4YSaC4W2O2C1 KE4GVa8H1_2f7C3 M$3_WaqsA3Q1 yS4KK94M1 UN4MPcz37N3pT1tx2Z2R4J2F10 MK4GPc6y1Y1U6aw8gK6 KI4wScE2AaA2H1 UN4MPcS7_l wY4ARckS5G5J1 Wy4S$cZ2F9 C$4WJcL6vRh9$3fpQ3jA9 _Q4AVbkS2A5B1E2v WY4QVbQ6z3Y5D5 WY4QVbM1Sa0C5 MM4SVb8Af SR4UIc2D4 UF4MEc1D4N1F9 WG4MIc8z3 AM4KPctXa C$4OLcD26fO1L451A4 YF4yTcI1A5gY3Z2Y1 Az3YGdH3Ppvc UN4MPcwc_1S7cW3hM2vy6F5 AY3wTb4O2 EY4YIbO3V1_4x3E1w1 MC5fCcEG1 KQ5OL1z1y1d0B2L5 C_5yrmkO1_5 WL59K3GbG6R5Q2X1_cb KB6WA1afg8 KR5GO1vX2 AK5OnE8pY4Sb0ubuF6M7 C_5yrW1B3 EC6OA139 wS5GM1M6$7y4J8 AC6EA1h9 w$5MA1gg OA6Qv3M1 KB6WA14r SB6AvZ1F6 GA6OC12rg7 OB6wvnj KA6yA17C1 OB6wv4p YA6KB1ae KR5GO1Z3Q4 OY5K2J1O1 KR5GO1amibkJ2 AC6EA1dD1 Y$5woC2R4y2x9 wS5GM1P1A2 MA5_2R1q OO5UF1F2I21o yS5EA23G1bsF3Y2X1O2 yS5EA2T1Z54F1A1T1y1X1M5x2M9V6 OO5UF1y1w5 A_4Gber6L2cH1 Cz4_asB18g5q U_4noW2hw1 MB6QB11p ON5MH2C5P4ap2z1 wE6EK1V2V9 GA6OC1w2Y9 AD6GM1A2Y6o6ur2F1dX1 GE6EL1F1C1 KA6yA1ee IM5yH1b2 W_4AQ3U6J3gG1uS6 OB5Kw3K5x5 E_4yJ4Y5L7 CI5Cx3D4O5 Gy5WP2YdB96h AC6E_3Ia$8K4N3 YG5OU3K1U6C4yeM3K9K6Uc E_4yJ4I5Cd Kw5Cw3Z2R8hlH13D1E1dK28w1A6Mi W_4AQ3pj S_4wS33B28n KA6EY3W1A6 yz5WE4D3N9 yA6KS3B1M3 K$5wU3$4I5 U$5_V3x4K5 YK6AS2Z8A6J1eR2bx2V2 U$5_V3mG2 OC6y$3JcYc Kw5yG2C2y95C2vS2 Kw5Cw3eG1 G$5GT3kQ2 O$5OV36g w$5WV31m KA6EY3fN2 WH5CI37ldx7oz6M2Rf OW5OJ2Y1w7qQ1G2U2 ON5MH2V1Q1T14 AC6E_3eY1 OC6y$3S4OgqQ2oK1 GR5yP5l5br CP5_B5L5y4 GO5QL6x4x2S1DlF1Vc Ew5GH6V3I3 wx5EL61L16pG7H6kA50Y6nA7N1I5 Mz4I_4A6J7 _w5EK6X3K3gw10M1$1UaeA7 wG5O$4B4y5R2I2 w_5Q_4sJ1y8B9 WP5UA6A3C1B1y9cC2P1M1aM19W1$2P1 GR5yP5A2F1 IQ5YQ5ur MD5_W4K6yf US5IB81T6$195N1 yZ5OD8_2GdB13D4M3 GW5ID71v wy5IZ7Q5S1 EP5_C77f4jw5i yM5MW6w8y4 wU5MC70C1 Wx5GR7N4edT3 SA6OV7D4b Ox5KK8G3T1 Sy5OC88F9 wy5IZ7dR4nB4 MQ5yY74V669 MA5GR7rA6N1_5iy6 _y5GR8K3V1 WZ5KZ73Q2eu1S2 MQ5yY7T1c _M5MC8D4_1fu CI5UE8$8O3dB4 ww5wM7qw3 Ux5UQ7dX2cn EW5IC7y2fS2F1Q3T3 EW5IC7J14 WH5_y9R3U7 KQ5WXaE3L7 _y5GFaA7G4C4y1iX5nF3 _C5QCaG3F7 OD5MY9R5AdfW3 GH5KWaI2M1M4W54i EE5SEaK2w3 EE5SEaF1B2 OA5yKaQ2L8 OH6Ca_6E8 OH6CaX2N3 WE6MaY29 yX6_Q1M6Ug WJ6Mx1E2S7bC1hd UC7R19C87C1jG1r4$6R3 SZ6K5N3X1X1ensH5Kd YH6Mz1_1G7 OK6QD20K1n7 UE630K3 I_6SB2K1X1E1H2Y8xku2 yV6wH2Q6R4 wy6SE22rfd I_6SB256 WE6U60Y3 C_6YB2V1Q1 Gw6SG2U2$1 MO6GiR9_n wy6SE2I1Z2 _S6Unw3S7YbEq YS6Aoy1M3AbCoU2M6 WJ6SE2G1G5C1y6 yV6IA13g6E1z3O9H2O3$3I3 CF6wK1ra OJ6IL1T1gX2t KG6KP14P1A3R2 SZ6K5V6Oi UE6G32O3 SN6UQ1P1z5F1C1dL1 OJ6IL1w1Z1C1X1S6zf wE6EK1jA1 KG6KP1H1P4 CF6wK17l MO6GiQ4S5 CS6UL4K2N1S5$1W4Y1 OK7MK3R1L2N3L3Z6Vf OB7QS3G9O3 U_6_J4W1Td QK7IA4Faz3 yV6wH29A1gc SQ6WR3Q6Sn CW6GJ2Y2X1 U_6_U2N2H5X2x7jb QP6SX2eU1qW1V1I1 yX6WO2D8E5di0G1 QP6SX22nip KP6SV26A2 KP6SV26ik3 EQ6AW2C5T3_2B3 yV6wH2D5I3 KA7Ky3V9V3X3U2N3_4 KA7Ky3E1Z9 SQ6WR3_4T3_bO4 CQ6AN2ccg3 U_6_J4wbU4 YQ6CL2le0Q1 CR6EN26D1ft CQ6AN21qfmR3E2 CR6EN2E1L1y3R2 wY6OH2M1r Gw6SG29A1oA3A4Ma _Q6IN2B1O1Z3S2 YK6AS2K1n _Q6IN243 _L6UQ2F1M1 _L6UQ24k wS6ER4hgP4Q7 Yz6yE5XeI2 OP6KM5SenW8cem CR6Yz5y6Z2 CR6Yz5T1Nh wB7yD6$1Q8 IL7wY5T2O41I1 UH7YM5ghG2C1Y2G2 AK7IW4Zc$4 OZ6A_4sYd O_6Q$4lM59CgfO2 Sy6wJ6F5x3x53 U_6_A6B2y8 IX6EN6D1nN48 EX6_F64G7 WR6WP6U2q_2Y1 EY6WN6X2Oe2iig3G1 QC7EO6V2X1 Gx6UP6B3z1 OI7YC5$9H3 O_6Q$4$4P1 w$6MM6X8KB1 Sy6wJ6I3S2 wZ6_V6Y2Dc EY6WN64D7 CR6Yz5kye YN6EZ4aC4 IX6EN6si OP6KM5L1Df CO6Gz4K6B1C5y1 WR6WP69M8 WR6UM60C3 SI6EU4K3y1y1E3 _D7AW8Z1P1L7L4 GT6OB7N3L2 CS6yG88j1$3aJ2W1F4 IV6OI8tC2 AG6KX8w2O1U1w1A2C3 CU6wX8Y2s QK7EH7PbW1937v AG6KX8eT8_2cY5E2_1Y1 _L6YE85Ff _D7AW8Q1B3 yV6M_6O4C3 Ox6Ez6E4K28k yV6M_6fA4mO1jw2V1vV1y6 MR6CY6H8Z4 wD6CV7_12_2O2A1aM104B2i7 Wy6KY6x2L2 MI7wU7qW1 QV6G_7H1N2 QV6G_7C1T5K3qsi6k QW6OM8qL3 I$6U$8W4T9 Y$6_z6I8W2Y2e YP6C$6bU1 US6GI9O1Lg CU6wX8O2Lb YP6C$6L6R4 CS6QM7G3I1w11 CX6WN7K3fA3k wL6wM7lQ2 OP6YW8$2y6 OQ6wX8vB1 KS6GF8K2m QV6G_7aw1F1y5 QK7yE8V1H2nX1U2N7 YK7IY7R1X1 wW6WY8H2Gi AX6QV72Z7 CR6_S8I3N8 SX6Q$6I2R9 EX6AJ8jO3 yU6OH89n2p EV6SV7rA50G1 MR6CY6T1A7 Yw6EQ8J2J1 Yw6EQ8D2CiB1O6 CU6wX8L3z3 MS6wH8y1Q12G1 KG7wZ8L2Z3 YL6SV72T5 GJ7QW7bV1 OR6GM7ka GZ6AK8nw4 OY6wO8T1y9 OQ6wX8z2Ab OQ6wX8C1C14mT2wa CR6_S8bu WQ6yT8H1y2 AG6KX8D25 AG6KX8dW3 YJ6Y_aQ5PhW1z9 Ex6MGax3R6V2J5B2D2 EZ6QJaB15B1H1B6X4 US6MX9D7E6D4G2j1 wH6KCaW3X1W2c GO6_AaH1Cd SU6yK9w1eG1V2 OK7M$8X3M5 EG7QF9P2L5 UD7EA9Q3B5 YI6wV9G1X5S3Hd QN6wC9Q1S1 SF6Ax8Q2W3 QG6KF9S1T6 yE6MW9y3hM3D2 SX6UI9I1x1A4D3O2$3 AB7Ay8U2E4 Q$6YV9M5x7 I$6U$8U3Y9 yE7yN9_1Y3K1O3 UG7IR9x4_6H2N2 CK7MS9H1x4jz3P1Z4 QQ6I_8C1A1rw6 WQ6CG9_1E2 EZ6QJaH1G2mQ2fG1 Ex6MGaA1Y1 Ey6EIaS2w3 EZ6QJaS5C7_1y4 Yz6_Ea_6Wa W_6_LaA4P5K2K2w1Q2 QG6KF9pQ36M3mQ18A2 Yz6_EaS1R4 CT6SU9iB2uT7 OR6M$9O3U2 yE7yN9M3$3 yC7MJ9A2Q4 WG7YE9ho EG7QF9H3y3 yC7MJ9Z4Q3J4M2P2M3pU1 Q$6YV9B3J3T1$3 CT6SU93N2nR4eL5 _Q6KDagz3 OR6M$94D1 SR6I_9ux5 US6MX9eZ2 QS6MY94v OA7_z9O1V5 SF6Ax85K2ig0S1ja4M4C1I1 ML7AwaR8Q8V9W8z2Y3D13 YG6U$9$1r _Z6ABbJ1L3 wH6KCaB1V2 WQ6CG9P2Q8 EC7yQaN3z4 EM6WT9K1B1G4D5 AP6ME9W1W1 QN6wC9H2$1 AP6ME9F2K9lA6 OM6Uz8F1G3 IL6wA9N4ye wG6WP9H1M3na CI6W_8G3E2 GO6_AaM3V2 Ey6EIaU1F3 Ex6MGa$1E3 YG5IQb$5I5F3A2 yy4ySbmU4 UB5AFbI1y1uw2 _E5OMbw1w3 IH5Kxb$1C1z2K2M1A8 IH5KxbC2wa wO5ywbB1F2 SE5yybkQ2 wD5WJbF2V4 wD5WJbE1Y2 YG5IQby3O8 Sz4QXba_35Oa _N5UDctB4L2x6 IQ5MGcN1Pb UK5WYbz1y1N1o yO5KYbD1c KK5KGbms AL5GHb2F1 yG5WHb0uQ4M9M2W6 wO5ywb3z16j yO5KYbw1L12T2X5Dd _O5_Kc3O3P1_cT1G7J1U2 _O5_KcU1v SQ5_JcdY6X1WdF1K5P1_2 MK5EFdnE1 OD5EwceG6I1y5 QK5yJc9fP147H3 _N5UDceW2 YH5C_cdP42J3qR3gpG1l3D2 IQ5MGcx11 IO5GHdU1T4O4DjiX31B3 MO5KGciU4 U_4IVc8_2uy4 wz4_FdP1D6 _N5UDc3oN1s AB5EVcL24 KL5_GdtZ1 QL5WGdD1R1 wU5UIcH4K1 _B6AEcU1D1w2x3e5w3U9 IQ5MGcaS3 wU5UIcG2N1 yw5OHcE57eT19hn3DfQ1 _B6AEckmW1Yb4Qacw1O1Q4 IA6yDcW14 KV6yHcU1N1 CQ6QWcz1$3P3Ba UK6OIcX1Q2 QK7yLbB1q YJ7_WbT9iX7A4nV1 YJ7_Wb8T1 OK7AWbdl GX6IXbCaH6G8J4 OJ7WMb8iaA30C5 YJ7_Wbug", "rail": "EbOV9J5C6z1C3$3S7 1QIaA2T5_2R5ybPeO2N2EvZqE2Z2G7Pbw3B5E2D2U5B4C8zaG4$7E2H5_eJQ1E4z9O2D4y2R3wmZlK3z3 9SKaA2D6Y1$3G2x3W2R3YaHcKv$qE2Z2G7Pbw3$4E2F2U5B4C8zaQ3T6K2D5CgNT1G2N5S2D5C4N5YoznW5R7U8BdO3X3 ybUU9L1y1 AaCX9T3w4X2W4D2_4B2S6 YdWKbJ65X2D1$2H3F2F4 jwOb_3_j_3IvC1Q6 7KNbM7T1QeR1G4uW3M2y2E3O5E7Odyjw6Y8M2I5U3wc YdWKby7pS2aI4E2A4_3Q5E7EaQeK3Q5Y6W8O2S5U3Sc A8EGdP4ND1z3$j 0wNbE7X1SeV1E4uU3K2y2E3C3E4wfymY6w8K2G5U3Yc 9WMbG4B1y9t wH35sK3Q6OgW3U8Yc_qK3IaK1U9O1W7W2Ocy2MbC1Aa2U3jM4F1O3P2G4 OI3tO4QbI6Qew7EgA6weS4AfU1K6G2_dQ2Iaw1I4M2y2Y2M1C31O6Z4I2B1OlD5y2vE6J3w9T7S3vIbY3I2G1M2A2Y5I6GbK9 wH35A6YfE5ybObyny2S7_4EhqG4w1wcQ2KaO3_9K4YlQ7IsG4QhE2Ca_4Mi CI3fM6wgO6YeY9IkK2E6y2Q9C3WbE2Key2WbA3S8A4GkY7Uty6OsU4Oh GI3jC5UdK4CaO3w7Y9KkU2U6A4GdY1y6C2SdG2A9w1w4W2S3w2O1I31M6Z4G2B1OlB5_2B1E6L3w9R7Q3vK2gEbQ4M2_1w6I7GaI8 EM4$1Q5MiU1G4E1I2K3y4E9w8W6I7Q2S3M4A9Y2AaG4OdS3G7Y3A5W2Q2C3Y1Idw5KiY7y5y1G4o AM4Z1Q5Iiw2Q6K3y4Q1w1S7C7Y6K7Q2S3M2Q4A2O4W2_9Y3Mc_2K6C3A5Q4Q4E3w1UrAc IM4B2Q5KiS1E4uY1Q3I5O8C8O7W7C4I6U4_aW6CmI2S4C2A3S2W2O3M2MpKbM5C2y65Q3O1 OM4H2O5MiS1C4K1O2E3S4Q1W1y6K6O7W7C4K6w2E6y1y4U6_lM2W4C3G4w2S2A2G1MpKbM5C2y65S3O1 QY4YN3S3D3y2N1QoX5E4F2KpZi_oPn CI4EE4Y3D5G9XdI3x3W3F3Q3V1AdX2ya$2G3L1I4Z2CmLgW7D7 QY4YN3z2S3D1C2nA2F1U55C46G2M3Ge MX4YK5J3J6L1$5rB7nTmT1JbrB4J1$3 GH4IP2Y1MciW2G2_8O3Eay3YjK8yvI6MqW4Oh KQ4wZ3E1W5 Uz4CO5T3LfD4Hf ID5CO6J7xqZ1F4 QD5MN6x6PpF1Z2J1B2 Iw4wO5Q1O2A1Q2y6Qp _D5AN6Z6$oH1z2T1H2 MX4YK5y2C4 MX4YK5Y2I4 yV4OP4hF2 SY5KV2C2w2y1K1K38Y1dWiVcY4V2O5$4 WF5KR6X3zdN5Fn AE5_M6R3$dx1V9T1T6 YE5MH6N6Hn Uz4CO5I6Uo Uz4CO5y6Qp GP7OU1NeYdH4y4 SN7KW1HaW9Z6C7 KK7WM3V2vDdF2T2T1P2T3B1Z2pR37z3aR4uP3M1F3y3X4 KK7WM3H9N7J4J5x3B4H2P1N2tV30 A_6OM3w6Q2A6Q1 A_6OM3S1sUbI4 KK7WM3U1K1"};
+const ZHK=[{"id":"z40","n":"СТОУН Блик","dev":"STONE","cat":"bus","dn":"Донской","kh":0,"addr":null,"metro":"Верхние котлы","wm":11,"pa":661,"pm":581.0,"pl":23.9,"ph":71.2,"due":"3кв.2030","dy":2030,"fl":49,"fin":"Без отделки","flats":null,"cnt":172,"lc":"https://zhk-stoun-blik-i.cian.ru/","lat":55.69393,"lon":37.62281,"exact":0},{"id":"z43","n":"Ривер Парк Кутузовский","dev":"AEON Corporation","cat":"prem","dn":"Дорогомилово","kh":0,"addr":null,"metro":"Фили","wm":6,"pa":824,"pm":849.0,"pl":29.4,"ph":332.2,"due":"2026–2027","dy":2026,"fl":46,"fin":"Без отделки, предчистовая, чистовая","flats":315,"cnt":215,"lc":"https://zhk-river-park-kutuzovskiy-i.cian.ru/","lat":55.74379,"lon":37.52037,"exact":0},{"id":"z66","n":"Коллекция Лужники","dev":"Абсолют","cat":"dlx","dn":"Хамовники","kh":1,"addr":"Лужнецкая наб.","metro":"Воробьёвы горы","wm":13,"pa":2005,"pm":1553.0,"pl":79.0,"ph":824.4,"due":"4кв.2027","dy":2027,"fl":18,"fin":"Без отделки, предчистовая","flats":171,"cnt":118,"lc":"https://zhk-luzhniki-collection-i.cian.ru/","lat":55.71257,"lon":37.57002,"exact":0},{"id":"z78","n":"Красный Октябрь","dev":"Гута Девелопмент","cat":"dlx","dn":"Якиманка","kh":0,"addr":"Берсеневская наб.","metro":"Кропоткинская","wm":12,"pa":2300,"pm":2990.0,"pl":309.88,"ph":309.88,"due":"3кв.2026","dy":2026,"fl":5,"fin":"Предчистовая","flats":1,"cnt":1,"lc":"https://zhk-krasnyy-oktyabr-i.cian.ru/","lat":55.74092,"lon":37.61133,"exact":0},{"id":"z79","n":"Начало","dev":"Донстрой","cat":"prem","dn":"Пресненский","kh":0,"addr":"ул. Сергея Макеева, 7С2","metro":"Улица 1905 года","wm":13,"pa":1168,"pm":1003.0,"pl":39.7,"ph":406.7,"due":"2029–2030","dy":2029,"fl":48,"fin":"Без отделки","flats":228,"cnt":228,"lc":"https://zhk-nachalo-i.cian.ru/","lat":55.75944,"lon":37.54744,"exact":0},{"id":"z88","n":"Лё Дом","dev":"ЛСР","cat":"lux","dn":"Хамовники","kh":1,"addr":"Соймоновский пр., 3","metro":"Кропоткинская","wm":5,"pa":1000,"pm":3684.0,"pl":467.19,"ph":9430.0,"due":"3кв.2026","dy":2026,"fl":5,"fin":"Без отделки","flats":65,"cnt":9,"lc":"https://zhk-le-dome-i.cian.ru/","lat":55.74266,"lon":37.60473,"exact":1},{"id":"z90","n":"Аура","dev":"Мангазея","cat":"prem","dn":"Даниловский","kh":0,"addr":"Большая Тульская ул.","metro":"Тульская","wm":6,"pa":675,"pm":625.0,"pl":24.5,"ph":71.0,"due":"4кв.2027","dy":2027,"fl":42,"fin":"Без отделки","flats":916,"cnt":308,"lc":"https://zhk-aura-i.cian.ru/","lat":55.70741,"lon":37.61736,"exact":0},{"id":"z101","n":"Shift","dev":"Пионер","cat":"prem","dn":"Донской","kh":0,"addr":null,"metro":"Ленинский проспект","wm":7,"pa":1077,"pm":1013.0,"pl":45.0,"ph":491.2,"due":"1кв.2028","dy":2028,"fl":18,"fin":"Без отделки, чистовая","flats":171,"cnt":164,"lc":"https://zhk-shift-i.cian.ru/","lat":55.70967,"lon":37.59135,"exact":0},{"id":"z107","n":"Нова","dev":"Самолет","cat":"prem","dn":"Дорогомилово","kh":0,"addr":null,"metro":"Поклонная","wm":11,"pa":766,"pm":775.0,"pl":25.3,"ph":358.6,"due":"2027–2029","dy":2027,"fl":40,"fin":"Без отделки, предчистовая, чистовая","flats":366,"cnt":344,"lc":"https://zhk-nova-i.cian.ru/","lat":55.7253,"lon":37.51212,"exact":0},{"id":"z109","n":"Файв Тауэрс","dev":"СЗ 5 ДОНСКОЙ","cat":"bus","dn":"Даниловский","kh":0,"addr":"5-й Донской пр.","metro":"Площадь Гагарина","wm":9,"pa":601,"pm":580.0,"pl":26.0,"ph":68.3,"due":"4кв.2026","dy":2026,"fl":75,"fin":"Предчистовая","flats":118,"cnt":108,"lc":"https://zhk-the-five-moskva-i.cian.ru/","lat":55.70239,"lon":37.59094,"exact":0},{"id":"z110","n":"Русские сезоны","dev":"СЗ Экран","cat":"lux","dn":"Замоскворечье","kh":0,"addr":"ул. Большая Ордынка, 19С9","metro":"Третьяковская","wm":1,"pa":6125,"pm":4075.0,"pl":492.32,"ph":916.72,"due":"4кв.2026","dy":2026,"fl":7,"fin":"Без отделки","flats":99,"cnt":10,"lc":"https://zhk-russkie-sezony-i.cian.ru/","lat":55.7422,"lon":37.6266,"exact":0},{"id":"z113","n":"АУРУС Резиденции","dev":"Страна Девелопмент","cat":"prem","dn":"Пресненский","kh":0,"addr":"2-й Красногвардейский пр.","metro":"Москва-Сити","wm":3,"pa":1331,"pm":1067.0,"pl":39.7,"ph":550.3,"due":"4кв.2031","dy":2031,"fl":101,"fin":"Без отделки, предчистовая, чистовая","flats":201,"cnt":201,"lc":"https://zhk-stranasiti-i.cian.ru/","lat":55.75253,"lon":37.53402,"exact":0},{"id":"z114","n":"Allegoria","dev":"Стройтэкс","cat":"elt","dn":"Хамовники","kh":1,"addr":"ул. Остоженка","metro":"Кропоткинская","wm":null,"pa":1701,"pm":null,"pl":null,"ph":null,"due":"3кв.2026","dy":2026,"fl":6,"fin":"Чистовая","flats":null,"cnt":null,"lc":"https://zhk-allegoria-mosca-i.cian.ru/","lat":55.74313,"lon":37.60065,"exact":0},{"id":"z115","n":"Дом Дау","dev":"Сумма Элементов","cat":"prem","dn":"Пресненский","kh":0,"addr":"Краснопресненская наб.","metro":"Москва-Сити","wm":6,"pa":930,"pm":992.0,"pl":41.8,"ph":547.7,"due":"2кв.2027","dy":2027,"fl":87,"fin":"Без отделки","flats":290,"cnt":280,"lc":"https://zhk-dom-dau-i.cian.ru/","lat":55.75183,"lon":37.54358,"exact":0},{"id":"z119","n":"Лёвшинский, 19","dev":"Трансстройинвест","cat":"dlx","dn":"Хамовники","kh":1,"addr":"Большой Левшинский пер., 19","metro":"Парк Культуры","wm":11,"pa":2820,"pm":2491.0,"pl":200.2,"ph":573.8,"due":"2кв.2028","dy":2028,"fl":8,"fin":"Без отделки","flats":10,"cnt":10,"lc":"https://zhk-your-majesty-i.cian.ru/","lat":55.74128,"lon":37.58562,"exact":1},{"id":"z122","n":"Шелепиха","dev":"УЭЗ","cat":"bus","dn":"Пресненский","kh":0,"addr":null,"metro":"Шелепиха","wm":2,"pa":489,"pm":479.0,"pl":19.1,"ph":52.3,"due":"4кв.2026","dy":2026,"fl":36,"fin":"Без отделки","flats":77,"cnt":72,"lc":"https://zhk-cosmopolit-i.cian.ru/","lat":55.75504,"lon":37.52287,"exact":0},{"id":"z123","n":"D'oro Mille","dev":"Элита-Эко","cat":"elt","dn":"Дорогомилово","kh":0,"addr":"1-й Можайский тупик, 8Ас1","metro":"Смоленская, Краснопресненская","wm":null,"pa":1516,"pm":null,"pl":null,"ph":null,"due":"4кв.2026","dy":2026,"fl":14,"fin":"Без отделки","flats":156,"cnt":0,"lc":"https://zhk-doro-mille-i.cian.ru/","lat":55.74308,"lon":37.55823,"exact":0},{"id":"z127","n":"Резиденция Омега","dev":"Aurix Development","cat":"dlx","dn":"Гагаринский","kh":0,"addr":"ул. Фотиевой, 5С1","metro":"Воробьёвы горы","wm":5,"pa":1929,"pm":1977.0,"pl":158.47,"ph":354.9,"due":"1кв.2030","dy":2030,"fl":9,"fin":"Без отделки","flats":8,"cnt":8,"lc":"https://zhk-omega-residence-i.cian.ru/","lat":55.69861,"lon":37.55945,"exact":0},{"id":"z130","n":"Бадаевский","dev":"Capital Group","cat":"dlx","dn":"Дорогомилово","kh":0,"addr":null,"metro":"Киевская","wm":16,"pa":1527,"pm":1478.0,"pl":68.8,"ph":682.4,"due":"Западная лента 3кв.2026; Восточная 4кв.2027","dy":2026,"fl":18,"fin":"Без отделки","flats":154,"cnt":154,"lc":"https://zhk-badaevskiy-i.cian.ru/","lat":55.74896,"lon":37.55439,"exact":0},{"id":"z131","n":"Дом спорта","dev":"Capital Group","cat":"dlx","dn":"Пресненский","kh":0,"addr":"Дружинниковская ул., 18","metro":"Краснопресненская","wm":5,"pa":2535,"pm":2282.0,"pl":110.4,"ph":398.0,"due":"1кв.2029","dy":2029,"fl":8,"fin":"Без отделки","flats":12,"cnt":12,"lc":"https://zhk-dom-sporta-i.cian.ru/","lat":55.75784,"lon":37.5778,"exact":0},{"id":"z132","n":"Узоры","dev":"Capital Group","cat":"lux","dn":"Хамовники","kh":1,"addr":"2-й Вражский пер., 8","metro":"Киевская","wm":8,"pa":3374,"pm":3296.0,"pl":280.7,"ph":755.6,"due":"4кв.2028","dy":2028,"fl":10,"fin":null,"flats":73,"cnt":12,"lc":"https://zhk-uzory-i.cian.ru/","lat":55.73917,"lon":37.57428,"exact":1},{"id":"z134","n":"Дом 7 Даниловский","dev":"Coldy","cat":"prem","dn":"Даниловский","kh":0,"addr":"ул. Серпуховской Вал, 7","metro":"Тульская","wm":8,"pa":1008,"pm":1056.0,"pl":36.8,"ph":338.1,"due":"2кв.2027","dy":2027,"fl":15,"fin":"Без отделки, предчистовая","flats":207,"cnt":42,"lc":"https://zhk-dom-7-danilovskiy-i.cian.ru/","lat":55.71,"lon":37.61403,"exact":0},{"id":"z138","n":"Хайдаут","dev":"Dominanta","cat":"prem","dn":"Раменки","kh":0,"addr":"Потылиха кв-л","metro":"Кутузовская","wm":17,"pa":773,"pm":715.0,"pl":34.4,"ph":185.4,"due":"2кв.2028","dy":2028,"fl":49,"fin":"Без отделки","flats":132,"cnt":125,"lc":"https://zhk-hide-out-i.cian.ru/","lat":55.73149,"lon":37.53364,"exact":0},{"id":"z141","n":"Камергер","dev":"Engeo Development","cat":"dlx","dn":"Тверской","kh":0,"addr":"Георгиевский пер., 1","metro":"Охотный ряд","wm":3,"pa":2213,"pm":2150.0,"pl":164.4,"ph":2040.0,"due":"3кв.2026","dy":2026,"fl":6,"fin":"Чистовая","flats":38,"cnt":38,"lc":"https://zhk-kamerger-i.cian.ru/","lat":55.7587,"lon":37.61404,"exact":1},{"id":"z143","n":"Гранд Фили","dev":"Granard Development","cat":"prem","dn":"Филевский парк","kh":0,"addr":"48-й кв-л","metro":"Шелепиха","wm":18,"pa":783,"pm":787.0,"pl":31.2,"ph":83.9,"due":"2кв.2029","dy":2029,"fl":27,"fin":"Без отделки","flats":71,"cnt":71,"lc":"https://zhk-grand-fili-i.cian.ru/","lat":55.75373,"lon":37.51504,"exact":0},{"id":"z144","n":"Клубный дом Дуо","dev":"Hutton Development","cat":"dlx","dn":"Якиманка","kh":0,"addr":"Софийская наб., 34С3","metro":"Новокузнецкая","wm":9,"pa":1998,"pm":2492.0,"pl":137.4,"ph":1951.0,"due":"1кв.2028","dy":2028,"fl":7,"fin":"Черновая","flats":51,"cnt":31,"lc":"https://zhk-klubnyy-dom-duo-i.cian.ru/","lat":55.74742,"lon":37.62344,"exact":1},{"id":"z152","n":"ОНЕ","dev":"MR Group","cat":"prem","dn":"Пресненский","kh":0,"addr":"1-й Красногвардейский проезд, 13","metro":"Деловой центр","wm":4,"pa":1073,"pm":1063.0,"pl":43.5,"ph":127.2,"due":"2кв.2030","dy":2030,"fl":90,"fin":"Без отделки, предчистовая","flats":69,"cnt":60,"lc":"https://zhk-one-i.cian.ru/","lat":55.75076,"lon":37.53951,"exact":0},{"id":"z154","n":"Кло 17","dev":"MR Group","cat":"dlx","dn":"Арбат","kh":0,"addr":"Староваганьковский пер., 14","metro":"Александровский сад","wm":3,"pa":2628,"pm":2300.0,"pl":227.5,"ph":659.7,"due":"3кв.2026","dy":2026,"fl":7,"fin":"Без отделки","flats":26,"cnt":16,"lc":"https://zhk-clos-17-i.cian.ru/","lat":55.75024,"lon":37.60749,"exact":1},{"id":"z155","n":"Николь","dev":"MR Group","cat":"lux","dn":"Тверской","kh":0,"addr":"Никольская ул., 8/1С1","metro":"Площадь Революции","wm":1,"pa":3800,"pm":3000.0,"pl":234.4,"ph":1013.0,"due":"2027–2028","dy":2027,"fl":7,"fin":"Без отделки, предчистовая, чистовая","flats":11,"cnt":11,"lc":"https://zhk-nicole-i.cian.ru/","lat":55.75688,"lon":37.62526,"exact":0},{"id":"z157","n":"Казачий","dev":"MR Group","cat":"dlx","dn":"Якиманка","kh":0,"addr":"1-й Казачий пер., 10С1","metro":"Полянка","wm":5,"pa":2065,"pm":1962.0,"pl":138.8,"ph":477.6,"due":"3кв.2029","dy":2029,"fl":9,"fin":"Без отделки","flats":76,"cnt":27,"lc":"https://zhk-kazachiy-i.cian.ru/","lat":55.73569,"lon":37.62174,"exact":1},{"id":"z158","n":"Люче","dev":"MR Group","cat":"dlx","dn":"Арбат","kh":0,"addr":"Крестовоздвиженский пер., 4","metro":"Арбатская","wm":4,"pa":2158,"pm":2500.0,"pl":270.4,"ph":2153.0,"due":"2кв.2027","dy":2027,"fl":7,"fin":"Без отделки, предчистовая, чистовая","flats":26,"cnt":25,"lc":"https://zhk-luce-i.cian.ru/","lat":55.7517,"lon":37.60536,"exact":0},{"id":"z159","n":"Кинг & Санс","dev":"October Group","cat":"dlx","dn":"Раменки","kh":0,"addr":"Мосфильмовская ул., 31А","metro":"Ломоносовский проспект","wm":8,"pa":1666,"pm":1270.0,"pl":64.7,"ph":699.7,"due":"1кв.2027","dy":2027,"fl":15,"fin":"Без отделки","flats":55,"cnt":50,"lc":"https://zhk-king-sons-i.cian.ru/","lat":55.71033,"lon":37.5111,"exact":0},{"id":"z164","n":"Никитский-6","dev":"R4S Group","cat":"dlx","dn":"Арбат","kh":0,"addr":"Никитский бул., 6","metro":"Арбатская","wm":3,"pa":1720,"pm":2616.0,"pl":281.2,"ph":869.0,"due":"4кв.2026","dy":2026,"fl":8,"fin":"Чистовая","flats":57,"cnt":32,"lc":"https://zhk-nikitskiy-6-i.cian.ru/","lat":55.75357,"lon":37.60209,"exact":0},{"id":"z165","n":"Золотой квартал","dev":"RARITECO","cat":"elt","dn":"Замоскворечье","kh":0,"addr":"ЖК Золотой","metro":"Боровицкая","wm":null,"pa":949,"pm":null,"pl":280.0,"ph":628.02,"due":"Сдан (2021–2023)","dy":2021,"fl":6,"fin":"Без отделки, под ключ","flats":13,"cnt":7,"lc":"https://zhk-zolotoy-zhiloy-kvartal-1-i.cian.ru/","lat":55.7462,"lon":37.61799,"exact":0},{"id":"z166","n":"Eden","dev":"Sense","cat":"elt","dn":"Арбат","kh":0,"addr":"Нижний Кисловский пер., 7с1","metro":"Арбатская","wm":null,"pa":3500,"pm":null,"pl":null,"ph":null,"due":"3кв.2029","dy":2029,"fl":9,"fin":"Без отделки","flats":null,"cnt":0,"lc":"https://zhk-eden-i.cian.ru/","lat":55.75379,"lon":37.60442,"exact":0},{"id":"z169","n":"Фрунзенский","dev":"Sminex","cat":"dlx","dn":"Хамовники","kh":1,"addr":"Фрунзенская наб., 30","metro":"Фрунзенская","wm":10,"pa":2670,"pm":2560.0,"pl":159.2,"ph":3170.0,"due":"2027–2029","dy":2027,"fl":13,"fin":"Без отделки","flats":160,"cnt":157,"lc":"https://zhk-frunzenskaya-naberezhnaya-i.cian.ru/","lat":55.72506,"lon":37.58254,"exact":1},{"id":"z177","n":"Пыжевский","dev":"TEKTA GROUP","cat":"dlx","dn":"Якиманка","kh":0,"addr":"Пыжевский пер.","metro":"Третьяковская","wm":4,"pa":2864,"pm":2340.0,"pl":238.9,"ph":750.1,"due":"2кв.2029","dy":2029,"fl":14,"fin":"Без отделки, чистовая, чистовая с мебелью","flats":20,"cnt":20,"lc":"https://zhk-po-per-pyzhevskiy-i.cian.ru/","lat":55.73901,"lon":37.62241,"exact":0},{"id":"z181","n":"Веспер Кутузовский","dev":"Vesper","cat":"dlx","dn":"Дорогомилово","kh":0,"addr":null,"metro":"Москва-Сити","wm":16,"pa":1358,"pm":1413.0,"pl":84.5,"ph":378.3,"due":"1кв.2028","dy":2028,"fl":21,"fin":"Без отделки","flats":84,"cnt":80,"lc":"https://zhk-vesper-kutuzovskiy-i.cian.ru/","lat":55.74833,"lon":37.55713,"exact":0},{"id":"z182","n":"Веспер Погодинская","dev":"Vesper","cat":"lux","dn":"Хамовники","kh":1,"addr":"Погодинская ул.","metro":"Спортивная","wm":10,"pa":1500,"pm":3203.0,"pl":445.0,"ph":893.1,"due":"4кв.2028","dy":2028,"fl":11,"fin":"Чистовая","flats":29,"cnt":29,"lc":"https://zhk-vesper-pogodinskaya-i.cian.ru/","lat":55.72844,"lon":37.55931,"exact":0},{"id":"z184","n":"Империум","dev":"Vesta Devel.","cat":"elt","dn":"Хамовники","kh":1,"addr":"2-й Обыденский пер., 7","metro":"Кропоткинская","wm":null,"pa":2610,"pm":null,"pl":null,"ph":null,"due":"3кв.2027","dy":2027,"fl":6,"fin":null,"flats":null,"cnt":0,"lc":"https://zhk-imperium-i.cian.ru/","lat":55.74172,"lon":37.60454,"exact":1},{"id":"z188","n":"Ильинка 3/8","dev":"Sminex","cat":"elt","dn":"Тверской","kh":0,"addr":"ул. Ильинка","metro":"Площадь Революции","wm":2,"pa":2958,"pm":null,"pl":100.8,"ph":1086.0,"due":"сдан (2025–2026)","dy":2025,"fl":5,"fin":"Без отделки, чистовая","flats":61,"cnt":29,"lc":"https://www.cian.ru/zhiloy-kompleks-ilinka-38-moskva-3958726/","lat":55.75576,"lon":37.62483,"exact":0}];
+const S0=55.690,W0=37.500;
+const AL='0123456789abcdefghijklmnopqrstuv',AC='ABCDEFGHIJKLMNOPQRSTUVWXYZwxyz_$';
+function dec(s){const v=[];let i=0;while(i<s.length){let x=0,m=1;while(AC.indexOf(s[i])>=0){x+=AC.indexOf(s[i])*m;m*=32;i++}x+=AL.indexOf(s[i])*m;i++;v.push(x%2?-(x+1)/2:x/2)}const p=[];let a=0,o=0;for(let k=0;k<v.length;k+=2){a+=v[k];o+=v[k+1];p.push([S0+a*2e-5,W0+o*2e-5])}return p}
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmtN=n=>Math.round(n).toLocaleString('ru-RU');
+
+const map=L.map('map',{preferCanvas:true,zoomSnap:.5,minZoom:12,maxZoom:18,maxBounds:[[55.682,37.485],[55.772,37.65]],maxBoundsViscosity:.8});
+map.attributionControl.setPrefix(false).addAttribution('Подложка © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">участники OpenStreetMap</a>');
+const rend=L.canvas({padding:.3});
+const baseLayers={};
+function drawBase(){
+  Object.values(baseLayers).forEach(l=>map.removeLayer(l));
+  const g=(k,fn)=>{const grp=L.layerGroup();BASE[k].split(' ').filter(Boolean).forEach(s=>{const p=dec(s);if(p.length>1)grp.addLayer(fn(p))});grp.addTo(map);baseLayers[k]=grp};
+  g('green',p=>L.polygon(p,{renderer:rend,stroke:false,fillColor:css('--park'),fillOpacity:1,interactive:false}));
+  g('water',p=>L.polygon(p,{renderer:rend,stroke:false,fillColor:css('--water'),fillOpacity:1,interactive:false}));
+  g('bld',p=>L.polygon(p,{renderer:rend,stroke:false,fillColor:css('--bld'),fillOpacity:1,interactive:false}));
+  g('rail',p=>L.polyline(p,{renderer:rend,color:css('--rail'),weight:1.4,dashArray:'5 4',interactive:false}));
+  g('minor',p=>L.polyline(p,{renderer:rend,color:css('--road2'),weight:2,lineCap:'round',interactive:false}));
+  g('major',p=>L.polyline(p,{renderer:rend,color:css('--road'),weight:4,lineCap:'round',interactive:false}));
+  sizeRoads();
+}
+function sizeRoads(){const z=map.getZoom();const f=Math.pow(1.6,z-14);
+  baseLayers.minor&&baseLayers.minor.eachLayer(l=>l.setStyle({weight:Math.max(.8,2.2*f)}));
+  baseLayers.major&&baseLayers.major.eachLayer(l=>l.setStyle({weight:Math.max(1.6,4.5*f)}));}
+map.on('zoomend',sizeRoads);
+
+/* ---------- dictionaries ---------- */
+const CATCOL={parks:'--c-parks',food:'--c-food',beauty:'--c-beauty',leisure:'--c-leisure',edu:'--c-edu',shop:'--c-shop',sport:'--c-sport',culture:'--c-culture',vg:'--c-vg'};
+const LUCAT={'Рестораны и кафе':'food','Красота и здоровье':'beauty','Развлечения и шопинг':'fun','Дети':'kids'};
+const LUCOL={sport:'--c-sport',food:'--c-food',beauty:'--c-beauty',fun:'--c-fun',kids:'--c-kids'};
+const LUNAME={sport:'Спорт',food:'Рестораны и кафе',beauty:'Красота и здоровье',fun:'Развлечения и шопинг',kids:'Детям'};
+const luCat=it=>LUCAT[it.sub]||'sport';
+const ZCLS=[['bus','Бизнес'],['prem','Премиум'],['dlx','Делюкс'],['elt','Элитный'],['lux','Люкс']];
+const ZCN=Object.fromEntries(ZCLS);
+const ZDUE=[['26','до 2026',y=>y<=2026],['27','2027',y=>y===2027],['28','2028',y=>y===2028],['29','2029 и позже',y=>y>=2029]];
+const HOUSE='<svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7"/><path d="M6 10v9h12v-9"/><path d="M10 19v-5h4v5"/></svg>';
+const PMIN=Math.floor(Math.min(...ZHK.filter(z=>z.pa).map(z=>z.pa))/10)*10, PMAX=Math.ceil(Math.max(...ZHK.filter(z=>z.pa).map(z=>z.pa))/10)*10;
+const vToP=v=>Math.round(PMIN*Math.pow(PMAX/PMIN,v/1000)/10)*10;
+
+/* ---------- state ---------- */
+let tab='kh', off=new Set(), q='', showZ=true, showI=true;
+const zOff=new Set(), zDue=new Set(); let pLo=0,pHi=1000;
+const open=new Set(['zhk']);
+const markers={kh:[],lu:[],z:[]}; const layer={kh:L.layerGroup(),lu:L.layerGroup(),z:L.layerGroup()};
+const norm=s=>String(s||'').toLowerCase().replace(/ё/g,'е');
+function match(txt){if(!q)return true;const h=norm(txt);return norm(q).split(/\s+/).every(w=>h.includes(w))}
+
+/* ---------- popups ---------- */
+function icon(n,col,ap){return L.divIcon({className:'',html:`<div class="mk${ap?' ap':''}" style="background:var(${col})">${n}</div>`,iconSize:[24,24],iconAnchor:[12,12],popupAnchor:[0,-12]})}
+function popKh(it){return `<div class="pp"><div class="k">№ ${it.n} · ${esc(DATA.cats[it.cat])}</div><div class="t">${esc(it.name)}</div><div class="a">${esc(it.sub)}${it.approx?'':' · '+esc(it.addr)}</div>${it.approx?`<div class="w">Примерное место: ${esc(it.addr)}. Точный адрес уточняется.</div>`:''}</div>`}
+const LUBY={};DATA.lu.forEach(x=>{(LUBY[x.n]=LUBY[x.n]||[]).push(x)});
+function popB(b){const rows=b.items.map(n=>{const it=(LUBY[n]||[])[0];if(!it)return'';return `<li><span class="badge" style="background:var(${LUCOL[luCat(it)]})">${n}</span><span>${esc(it.name)}</span></li>`}).join('');
+  return `<div class="pp"><div class="k">Объект ${b.id} · ${b.items.length} услуг</div><div class="t">${esc(b.name)}</div><ul>${rows}</ul></div>`}
+function popLu(it){const b=it.b?DATA.lub.find(x=>x.id===it.b):null;return `<div class="pp"><div class="k">№ ${it.n} · ${esc(LUNAME[luCat(it)])}</div><div class="t">${esc(it.name)}</div><div class="a">${b?'Здание '+b.id+': '+esc(b.name):'ОК «Лужники»'}</div></div>`}
+function zPrice(z){if(!z.pa)return'';return z.pm&&z.pm!==z.pa?'от '+fmtN(z.pm)+', в среднем '+fmtN(z.pa)+' тыс. ₽':fmtN(z.pa)+' тыс. ₽'}
+function popZ(z){const r=(k,v)=>v?`<tr><td>${k}</td><td>${esc(v)}</td></tr>`:'';
+  const lots=z.pl!=null?(z.ph!=null&&z.ph!==z.pl?'от '+z.pl.toLocaleString('ru-RU')+' до '+z.ph.toLocaleString('ru-RU')+' млн ₽':z.pl.toLocaleString('ru-RU')+' млн ₽'):'';
+  return `<div class="pp"><div class="k"><span class="clsdot" style="background:var(--k-${z.cat})"></span>${esc(ZCN[z.cat]||'')} · ${esc(z.dn||'')}</div><div class="t">ЖК «${esc(z.n)}»</div><div class="a">${esc(z.addr||'')}</div><table>
+  ${r('Застройщик',z.dev)}${r('Метро',z.metro?(z.metro+(z.wm?', '+z.wm+' мин пешком':'')):'')}${r('Цена за м²',zPrice(z))}${r('Квартиры',lots)}${r('Срок сдачи',z.due)}${r('Этажность',z.fl?'до '+z.fl:'')}${r('Отделка',z.fin)}${r('Квартир в ЖК',z.flats?String(z.flats):'')}${r('В продаже',z.cnt?z.cnt+' кв. на ЦИАН':'')}</table>
+  ${z.lc?`<div style="margin-top:6px"><a href="${esc(z.lc)}" target="_blank" rel="noopener">Открыть на ЦИАН</a></div>`:''}${z.exact?'':'<div class="w">Точка перенесена с карты ЖК, возможна погрешность до 100 м.</div>'}</div>`}
+
+/* ---------- markers ---------- */
+function buildMarkers(){
+  DATA.kh.forEach((it,i)=>{const m=L.marker([it.lat,it.lon],{icon:icon(it.n,CATCOL[it.cat],it.approx),riseOnHover:true}).bindPopup(()=>popKh(it));m._it=it;markers.kh.push(m)});
+  DATA.lub.forEach(b=>{const m=L.marker([b.lat,b.lon],{icon:L.divIcon({className:'',html:`<div class="bmk">${b.id}</div>`,iconSize:[36,26],iconAnchor:[18,13],popupAnchor:[0,-13]}),zIndexOffset:500,riseOnHover:true}).bindPopup(()=>popB(b),{maxWidth:320});m._b=b;markers.lu.push(m)});
+  DATA.lu.filter(x=>x.lat).forEach(it=>{const m=L.marker([it.lat,it.lon],{icon:icon(it.n,LUCOL[luCat(it)]),riseOnHover:true}).bindPopup(()=>popLu(it));m._it=it;markers.lu.push(m)});
+  ZHK.forEach(z=>{const s=z.kh?32:28;const m=L.marker([z.lat,z.lon],{icon:L.divIcon({className:'',html:`<div class="zmk${z.kh?' kh':''}" style="background:var(--k-${z.cat})">${HOUSE}</div>`,iconSize:[s,s],iconAnchor:[s/2,s],popupAnchor:[0,-s]}),zIndexOffset:1000,riseOnHover:true,title:'ЖК '+z.n}).bindPopup(()=>popZ(z),{maxWidth:320});m._z=z;markers.z.push(m)});
+}
+function visKh(it){return !off.has(it.cat)&&match(it.name+' '+it.addr+' '+it.sub+' '+it.n)}
+function visLu(it){const c=luCat(it);const t=it.name+' '+it.sub+' '+it.n;if((c==='kids'||it.kids)&&!off.has('kids'))return match(t);return !off.has(c)&&match(t)}
+function zFiltered(){return pLo>0||pHi<1000}
+function visZ(z){if(zOff.has(z.cat))return false;
+  if(zFiltered()){if(!z.pa)return false;const lo=vToP(pLo),hi=vToP(pHi);if(z.pa<lo||z.pa>hi)return false}
+  if(zDue.size&&z.dy){if(ZDUE.some(d=>zDue.has(d[0])&&d[2](z.dy)))return false}
+  return match('жк '+z.n+' '+(z.dev||'')+' '+(z.addr||'')+' '+(z.metro||'')+' '+(z.dn||''))}
+function zSorted(){return ZHK.filter(visZ).sort((a,b)=>(b.kh-a.kh)||((b.pa||0)-(a.pa||0)))}
+
+function refreshMap(){
+  Object.values(layer).forEach(l=>{l.clearLayers();map.removeLayer(l)});
+  if(showI){
+    if(tab==='kh'){markers.kh.forEach(m=>{if(visKh(m._it))layer.kh.addLayer(m)});layer.kh.addTo(map)}
+    else{markers.lu.forEach(m=>{if(m._b){if(m._b.items.some(n=>(LUBY[n]||[]).some(visLu)))layer.lu.addLayer(m)}else if(visLu(m._it))layer.lu.addLayer(m)});layer.lu.addTo(map)}
+  }
+  if(showZ){markers.z.forEach(m=>{if(visZ(m._z))layer.z.addLayer(m)});layer.z.addTo(map)}
+  zStatus();
+}
+
+/* ---------- controls ---------- */
+function chipBtn(name,col,ct,on,fn,shape){const b=document.createElement('button');b.className='chip';b.setAttribute('aria-pressed',on);
+  b.innerHTML=`${col?`<span class="dot" style="background:var(${col});${shape==='sq'?'border-radius:3px':''}"></span>`:''}${esc(name)}${ct!=null?` <span class="ct">${ct}</span>`:''}`;b.onclick=()=>{fn();b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true')};return b}
+function chips(){
+  const el=document.getElementById('chips');el.innerHTML='';el.hidden=!showI;
+  const defs=tab==='kh'?Object.keys(DATA.cats).map(k=>[k,DATA.cats[k],CATCOL[k],DATA.kh.filter(x=>x.cat===k).length])
+    :Object.keys(LUNAME).map(k=>[k,LUNAME[k],LUCOL[k],DATA.lu.filter(x=>k==='kids'?(luCat(x)==='kids'||x.kids):luCat(x)===k).length]);
+  defs.forEach(([k,name,col,ct])=>el.appendChild(chipBtn(name,col,ct,!off.has(k),()=>{off.has(k)?off.delete(k):off.add(k);refreshMap();list()})));
+}
+function zControls(){
+  const c=document.getElementById('zf-cls');c.innerHTML='';
+  ZCLS.forEach(([k,n])=>{const ct=ZHK.filter(z=>z.cat===k).length;if(!ct)return;c.appendChild(chipBtn(n,'--k-'+k,ct,!zOff.has(k),()=>{zOff.has(k)?zOff.delete(k):zOff.add(k);refreshMap();list()},'sq'))});
+  const d=document.getElementById('zf-due');d.innerHTML='';
+  ZDUE.forEach(([k,n,f])=>{const ct=ZHK.filter(z=>z.dy&&f(z.dy)).length;d.appendChild(chipBtn(n,'--muted',ct,!zDue.has(k),()=>{zDue.has(k)?zDue.delete(k):zDue.add(k);refreshMap();list()}))});
+  priceUI();
+}
+function priceUI(){const lo=document.getElementById('zf-lo'),hi=document.getElementById('zf-hi');lo.value=pLo;hi.value=pHi;
+  document.getElementById('zf-pv').textContent=`${fmtN(vToP(pLo))} – ${fmtN(vToP(pHi))} тыс. ₽`;
+  const f=document.getElementById('zf-fill');f.style.left=`calc(9px + (100% - 18px) * ${pLo/1000})`;f.style.width=`calc((100% - 18px) * ${(pHi-pLo)/1000})`}
+['zf-lo','zf-hi'].forEach(id=>document.getElementById(id).addEventListener('input',e=>{let v=+e.target.value;
+  if(id==='zf-lo'){pLo=Math.min(v,pHi-20)}else{pHi=Math.max(v,pLo+20)}priceUI();refreshMap();list()}));
+document.getElementById('zf-reset').onclick=()=>{zOff.clear();zDue.clear();pLo=0;pHi=1000;zControls();refreshMap();list()};
+function zStatus(){const n=ZHK.filter(visZ).length;const act=zOff.size||zDue.size||zFiltered();document.getElementById('zf-st').textContent=act?`показано ${n} из ${ZHK.length}`:`все ${ZHK.length}`}
+
+function focus(m){if(!m)return;const ll=m.getLatLng();map.flyTo(ll,Math.max(map.getZoom(),16),{duration:.6});setTimeout(()=>m.openPopup(),650);
+  if(window.matchMedia('(max-width:760px)').matches)document.querySelector('.mapwrap').scrollIntoView({behavior:'smooth'})}
+function rowHtml(n,col,name,ad,ap){return `<span class="badge" style="background:var(${col})">${n}</span><span><span class="nm">${esc(name)}</span>${ap?'<span class="tag">примерно</span>':''}<br><span class="ad">${esc(ad)}</span></span>`}
+function group(key,title,col,count,fill){
+  const d=document.createElement('details');d.className='grp';d.open=open.has(key)||!!q;
+  d.innerHTML=`<summary>${col?`<span class="dot" style="background:var(${col})"></span>`:''}${esc(title)}<span class="ct">${count}</span></summary><div class="inner"></div>`;
+  d.addEventListener('toggle',()=>{if(q)return;d.open?open.add(key):open.delete(key)});
+  fill(d.querySelector('.inner'));return d}
+function btnRow(html,fn){const r=document.createElement('button');r.className='row';r.innerHTML=html;r.onclick=fn;return r}
+function list(){
+  const el=document.getElementById('list');el.innerHTML='';let shown=0;
+  if(showZ){const zs=zSorted();if(zs.length){shown+=zs.length;
+    el.appendChild(group('zhk','Жилые комплексы',null,zs.length,inner=>{
+      const add=(arr,h)=>{if(!arr.length)return;const hh=document.createElement('h3');hh.textContent=h;inner.appendChild(hh);
+        arr.forEach(z=>inner.appendChild(btnRow(`<span class="zbadge" style="background:var(--k-${z.cat})">${HOUSE}</span><span><span class="nm">${esc(z.n)}</span><br><span class="ad">${esc(ZCN[z.cat]||'')}${z.pa?' · '+fmtN(z.pa)+' тыс. ₽/м²':''}${z.due?' · '+esc(z.due):''}</span></span>`,()=>focus(markers.z.find(m=>m._z===z)))))};
+      add(zs.filter(z=>z.kh),'В Хамовниках');add(zs.filter(z=>!z.kh),'Рядом с районом');}))}}
+  if(showI){
+  if(tab==='kh'){
+    Object.keys(DATA.cats).forEach(k=>{if(off.has(k))return;
+      const ms=markers.kh.filter(m=>m._it.cat===k&&visKh(m._it));
+      const un=DATA.unplaced.filter(x=>x.cat===k&&match(x.name+' '+x.sub+' '+x.n));
+      const total=new Set(ms.map(m=>m._it.n).concat(un.map(x=>x.n))).size;if(!total)return;shown+=total;
+      el.appendChild(group(k,DATA.cats[k],CATCOL[k],total,inner=>{
+        let sub=null;const seen=new Set();
+        ms.forEach(m=>{const it=m._it;if(it.sub!==sub&&k!=='parks'){sub=it.sub;const h=document.createElement('h3');h.textContent=sub;inner.appendChild(h)}
+          const dup=seen.has(it.n);seen.add(it.n);inner.appendChild(btnRow(rowHtml(it.n,CATCOL[k],it.name+(dup?' (ещё адрес)':''),it.addr,it.approx),()=>focus(m)))});
+        if(un.length){const h=document.createElement('h3');h.textContent='Без отметки на печатной карте';inner.appendChild(h);
+          un.forEach(it=>{const r=document.createElement('div');r.className='row';r.style.cursor='default';r.innerHTML=rowHtml(it.n,CATCOL[k],it.name,it.sub,0);inner.appendChild(r)})}}))});
+  }else{
+    const bl=DATA.lub.map(b=>[b,b.items.flatMap(n=>LUBY[n]||[]).filter(visLu)]).filter(x=>x[1].length);
+    if(bl.length){shown+=bl.length;el.appendChild(group('lub','Здания комплекса',null,bl.length,inner=>{
+      bl.forEach(([b,its])=>{const names=[...new Set(its.map(x=>x.name.replace(/^[^:]+: /,'')))];const n=its.length;
+        const w=n%10===1&&n%100!==11?'услуга':(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?'услуги':'услуг');
+        inner.appendChild(btnRow(`<span class="rn">${b.id}</span><span><span class="nm">${esc(b.name)}</span><br><span class="ad">${n} ${w}: ${esc(names.slice(0,4).join(', '))}${names.length>4?'…':''}</span></span>`,()=>focus(markers.lu.find(x=>x._b===b))))})}))}
+    const own=markers.lu.filter(m=>m._it&&visLu(m._it));
+    Object.keys(LUNAME).forEach(k=>{const ms=own.filter(m=>luCat(m._it)===k);if(!ms.length)return;shown+=ms.length;
+      el.appendChild(group('lu-'+k,k==='sport'?'Площадки и поля':LUNAME[k],LUCOL[k],ms.length,inner=>ms.forEach(m=>inner.appendChild(btnRow(rowHtml(m._it.n,LUCOL[k],m._it.name,m._it.sub,0),()=>focus(m))))))});
+    const rest=DATA.lu.filter(x=>!x.lat&&!x.b&&visLu(x));
+    if(rest.length)el.appendChild(group('lu-rest','Без точки на схеме',null,rest.length,inner=>rest.forEach(it=>{const r=document.createElement('div');r.className='row';r.innerHTML=rowHtml(it.n,LUCOL[luCat(it)],it.name,'ОК «Лужники»',0);inner.appendChild(r)})));
+  }}
+  if(!shown)el.insertAdjacentHTML('afterbegin','<div class="empty">Ничего не найдено. Измените запрос, фильтр или включите слои.</div>');
+  el.insertAdjacentHTML('beforeend',tab==='kh'
+    ?`<div class="note"><span><b>Номера</b> совпадают с печатной картой района (январь 2026).</span><span><b>Пунктирная обводка</b>: адрес не подтвердился, точка стоит по квадрату печатной карты.</span><span><b>ЖК</b>: данные и цены из карты ЖК Миррион.</span><span>Подложка: © участники OpenStreetMap.</span></div>`
+    :`<div class="note"><span><b>Римские цифры</b>: здания комплекса, внутри список всех клубов и услуг.</span><span><b>Арабские цифры</b>: поля, корты, кафе и площадки.</span><span>Подложка: © участники OpenStreetMap.</span></div>`);
+}
+function legend(){const z=showZ?`<span><i style="background:var(--k-dlx);border-radius:4px 4px 4px 1px;transform:rotate(-45deg)"></i>Жилой комплекс</span>`:'';
+  document.getElementById('legend').innerHTML=z+(!showI?'':tab==='kh'
+  ?`<span><i style="background:var(--c-food);border:2px solid var(--panel)"></i>Точный адрес</span><span><i style="background:var(--c-food);border:2px dashed var(--ink)"></i>Примерное место</span>`
+  :`<span><i style="background:var(--ink);border-radius:3px"></i>Здание комплекса</span><span><i style="background:var(--c-sport);border:2px solid var(--panel)"></i>Площадка, кафе</span>`)}
+const VIEW={kh:[[55.705,37.535],[55.752,37.615]],lu:[[55.7080,37.5395],[55.7250,37.5710]]};
+function setTab(t,fit=true){tab=t;off.clear();
+  document.getElementById('tab-kh').setAttribute('aria-pressed',t==='kh');document.getElementById('tab-lu').setAttribute('aria-pressed',t==='lu');
+  document.getElementById('title').textContent=t==='kh'?'Хамовники':'Лужники';
+  document.getElementById('subtitle').textContent=t==='kh'?'Жилые комплексы и инфраструктура района: парки, рестораны, школы, спорт и культура.':'Олимпийский комплекс: 16 зданий и десятки площадок для спорта, отдыха и детей.';
+  try{history.replaceState(null,'',t==='lu'?'#luzhniki':'#')}catch(e){}
+  chips();refreshMap();list();legend();if(fit)map.fitBounds(VIEW[t],{padding:[10,10]})}
+function layerBtn(id,get,set){const b=document.getElementById(id);b.onclick=()=>{set(!get());b.setAttribute('aria-pressed',get());document.getElementById('zf').hidden=!showZ;chips();refreshMap();list();legend()}}
+layerBtn('ly-z',()=>showZ,v=>showZ=v);layerBtn('ly-i',()=>showI,v=>showI=v);
+document.getElementById('tab-kh').onclick=()=>setTab('kh');document.getElementById('tab-lu').onclick=()=>setTab('lu');
+document.getElementById('q').addEventListener('input',e=>{q=e.target.value.trim();refreshMap();list()});
+document.getElementById('cnt-kh').textContent=new Set(DATA.kh.map(x=>x.n)).size+DATA.unplaced.length;
+document.getElementById('cnt-lu').textContent=DATA.lu.length;
+document.getElementById('cnt-z').textContent=ZHK.length;
+
+map.fitBounds(VIEW.kh);
+drawBase();buildMarkers();zControls();
+setTab(location.hash==='#luzhniki'?'lu':'kh');
+const mq=window.matchMedia('(prefers-color-scheme: dark)');mq.addEventListener&&mq.addEventListener('change',drawBase);
+new MutationObserver(drawBase).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+</script>
